@@ -1,0 +1,9 @@
+{
+  "devDependencies": {
+    "react-barcode-detection": "^0.0.15"
+  },
+  "dependencies": {
+    "expo": "^50.0.14",
+    "expo-camera": "~14.1.1"
+  }
+}
