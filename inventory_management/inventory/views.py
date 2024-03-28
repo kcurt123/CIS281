@@ -68,19 +68,23 @@ class LogoutView(View):
         return render(request, 'inventory/logout.html')
 
 class AddItem(LoginRequiredMixin, CreateView):
-	model = InventoryItem
-	form_class = InventoryItemForm
-	template_name = 'inventory/item_form.html'
-	success_url = reverse_lazy('dashboard')
+    model = InventoryItem
+    form_class = InventoryItemForm
+    template_name = 'inventory/item_form.html'
+    success_url = reverse_lazy('dashboard')
 
-	def get_context_data(self, **kwargs):
-		context = super().get_context_data(**kwargs)
-		context['categories'] = Category.objects.all()
-		return context
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.all()
+        return context
 
-	def form_valid(self, form):
-		form.instance.user = self.request.user
-		return super().form_valid(form)
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        # Capture barcode data from the POST request and save it
+        barcode = self.request.POST.get('barcode', '')  # Assuming barcode data is sent in POST request
+        form.instance.barcode = barcode  # Assuming you have a 'barcode' field in your model
+        return super().form_valid(form)
+
 
 class EditItem(LoginRequiredMixin, UpdateView):
 	model = InventoryItem
@@ -110,3 +114,15 @@ def update_inventory(request):
             return HttpResponseBadRequest("Invalid JSON")
     else:
         return JsonResponse({'error': 'This endpoint only accepts POST requests.'}, status=405)
+	
+def check_item_by_barcode(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        barcode = data.get('barcode', '')
+        try:
+            item = InventoryItem.objects.get(barcode=barcode)
+            # Assuming category is a ForeignKey in InventoryItem
+            return JsonResponse({'exists': True, 'item': {'name': item.name, 'quantity': item.quantity + 1, 'category_id': item.category.id if item.category else None}})
+        except InventoryItem.DoesNotExist:
+            return JsonResponse({'exists': False})
+    return JsonResponse({'error': 'This endpoint only accepts POST requests.'}, status=405)

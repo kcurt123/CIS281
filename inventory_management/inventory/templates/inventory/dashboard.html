@@ -28,8 +28,9 @@
           <th scope="col">Qty</th>
           <th scope="col">Category</th>
           <th scope="col">Barcode</th>
-          <th scope="col"></th>
-          <th scope="col"></th>
+          <th scope="col">Location</th>
+          <th scope="col">Supplier</th>
+          <th scope="col">Notes</th>
         </tr>
       </thead>
       <tbody>
@@ -41,27 +42,23 @@
           <td>-</td>
           <td>-</td>
           <td>-</td>
-          <td></td>
+          <td>-</td>
+          <td>-</td>
         </tr>
         {% endif %}
         {% for item in items %}
         <tr>
-          <th scope="row">{{ item.id }}</th>
-          <td>{{ item.name }}</td>
-          <td>{{ item.quantity }}</td>
-          <td>{{ item.category.name }}</td>
-          <td>{{ item.barcode }}</td>
-          <td><a href="{% url 'edit-item' item.id %}" class="btn btn-outline-secondary">Edit</a></td>
-          <td><a href="{% url 'delete-item' item.id %}" class="btn btn-secondary">Delete</a></td>
-          {% if item.id in low_inventory_ids %}
-          <td class="text-danger">{{ item.quantity }}</td>
-          {% else %}
-          <td class="text-success">{{ item.quantity }}</td>
-          {% endif %}
-          <td>{{ item.category.name }}</td>
-          <td><a href="{% url 'edit-item' item.id %}" class="btn btn-outline-secondary">Edit</a></td>
-          <td><a href="{% url 'delete-item' item.id %}" class="btn btn-secondary">Delete</a></td>
-        </tr>
+            <th scope="row">{{ item.id }}</th>
+            <td>{{ item.name }}</td>
+            <!-- Apply conditional class directly to this cell -->
+            <td class="{% if item.id in low_inventory_ids %}text-danger{% else %}text-success{% endif %}">{{ item.quantity }}</td>
+            <td>{{ item.category.name }}</td>
+            <td>{{ item.barcode }}</td>
+            <td>{{ item.location }}</td>
+            <td>{{ item.supplier }}</td>
+            <td><a href="{% url 'edit-item' item.id %}" class="btn btn-outline-secondary">Edit</a></td>
+            <td><a href="{% url 'delete-item' item.id %}" class="btn btn-secondary">Delete</a></td>
+          </tr>
         {% endfor %}
       </tbody>
     </table>
