@@ -21,26 +21,38 @@ class ItemsOutView(View):
 		return render(request, 'inventory/itemsout.html') 
 
 class Dashboard(LoginRequiredMixin, View):
-	def get(self, request):
-		items = InventoryItem.objects.filter(user=self.request.user.id).order_by('id')
+    def get(self, request):
+        # Capture the sort and search query parameters
+        sort_by = request.GET.get('sort', 'id')  # Default sort by 'id'
+        search_query = request.GET.get('search', '')
 
-		low_inventory = InventoryItem.objects.filter(
-			user=self.request.user.id,
-			quantity__lte=LOW_QUANTITY
-		)
+        # Start with all items for the current user
+        items = InventoryItem.objects.filter(user=request.user)
 
-		if low_inventory.count() > 0:
-			if low_inventory.count() > 1:
-				messages.error(request, f'{low_inventory.count()} items have low inventory')
-			else:
-				messages.error(request, f'{low_inventory.count()} item has low inventory')
+        # Apply search query if present
+        if search_query:
+            items = items.filter(name__icontains=search_query)
 
-		low_inventory_ids = InventoryItem.objects.filter(
-			user=self.request.user.id,
-			quantity__lte=LOW_QUANTITY
-		).values_list('id', flat=True)
+        # Apply sorting
+        items = items.order_by(sort_by)
 
-		return render(request, 'inventory/dashboard.html', {'items': items, 'low_inventory_ids': low_inventory_ids})
+        # Filter items with low inventory
+        low_inventory = items.filter(quantity__lte=LOW_QUANTITY)
+
+        # Generate messages for low inventory
+        low_inventory_count = low_inventory.count()
+        if low_inventory_count > 0:
+            message = f'{low_inventory_count} item has low inventory' if low_inventory_count == 1 else f'{low_inventory_count} items have low inventory'
+            messages.error(request, message)
+
+        # Extract IDs for items with low inventory, for conditional styling in the template
+        low_inventory_ids = low_inventory.values_list('id', flat=True)
+
+        return render(request, 'inventory/dashboard.html', {
+            'items': items,
+            'low_inventory_ids': low_inventory_ids,
+            'search_query': search_query  # Pass the search query to the template to maintain the search term in the search box
+        })
 
 class SignUpView(View):
 	def get(self, request):

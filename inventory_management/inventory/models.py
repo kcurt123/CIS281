@@ -1,6 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+# if a new field is to be created, create it then in the command line run "python3 manage.py makemigrations"
+#																		  "python3 manage.py migrate"			
+
 class Category(models.Model):
     name = models.CharField(max_length=200)
 
@@ -12,8 +15,8 @@ class Category(models.Model):
 
 class Supplier(models.Model):
     name = models.CharField(max_length=200)
-    website = models.CharField(max_length=200)
-    contact_Info = models.TextField(blank=True)  
+    website = models.TextField(blank=True)
+    contact_info = models.TextField(blank=True)  
 
     def __str__(self):
         return self.name
@@ -28,8 +31,6 @@ class InventoryItem(models.Model):
     location = models.CharField(max_length=200, blank=True, null=True)  
     supplier = models.ForeignKey(Supplier, on_delete=models.SET_NULL, blank=True, null=True)  
     notes = models.TextField(blank=True)  
-	# if a new field is to be created, create it then in the command line run "python3 manage.py makemigrations"
-	#																		  "python3 manage.py migrate"																		
-
+    
     def __str__(self):
         return self.name
