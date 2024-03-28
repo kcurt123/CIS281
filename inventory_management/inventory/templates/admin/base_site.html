@@ -1,0 +1,14 @@
+{% extends "admin/base.html" %}
+
+{% block title %}My Custom Admin Title{% endblock %}
+
+{% block userlinks %}
+    <a href="{% url 'dashboard' %}" class="button">Return to Dashboard</a>
+    {{ block.super }}
+{% endblock userlinks %}
+
+{% block branding %}
+<h1 id="site-name">
+    <a href="{% url 'admin:index' %}">Stock 4 You - Administrator View</a>
+</h1>
+{% endblock %}
