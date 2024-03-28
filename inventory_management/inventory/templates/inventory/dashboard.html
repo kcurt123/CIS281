@@ -44,6 +44,7 @@
           <td>-</td>
           <td>-</td>
           <td>-</td>
+          <td>-</td>
         </tr>
         {% endif %}
         {% for item in items %}
@@ -56,6 +57,7 @@
             <td>{{ item.barcode }}</td>
             <td>{{ item.location }}</td>
             <td>{{ item.supplier }}</td>
+            <td>{{ item.notes }}</td>
             <td><a href="{% url 'edit-item' item.id %}" class="btn btn-outline-secondary">Edit</a></td>
             <td><a href="{% url 'delete-item' item.id %}" class="btn btn-secondary">Delete</a></td>
           </tr>
