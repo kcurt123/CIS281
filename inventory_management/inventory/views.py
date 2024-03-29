@@ -6,6 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import UserRegisterForm, InventoryItemForm
 from .models import InventoryItem, Category
 from inventory_management.settings import LOW_QUANTITY
+from django.db.models import Q
 from django.contrib import messages
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -22,38 +23,38 @@ class ItemsOutView(View):
 
 class Dashboard(LoginRequiredMixin, View):
     def get(self, request):
-        # Capture the sort and search query parameters
-        sort_order = request.GET.get('order', 'asc')  # Default sort order 'asc'
-        sort_by = request.GET.get('sort', 'id')  # Default sort by 'id'
+        sort_order = request.GET.get('order', 'asc')
+        sort_by = request.GET.get('sort', 'id')
         search_query = request.GET.get('search', '')
 
-        # Start with all items for the current user
         items = InventoryItem.objects.filter(user=request.user)
 
-        # Apply search query if present
         if search_query:
-            items = items.filter(name__icontains=search_query)
+            query = Q(name__icontains=search_query) | \
+                    Q(barcode__icontains=search_query) | \
+                    Q(location__icontains=search_query)
+                    # name, barcode ,category works but but errors for the rest 
+					# reorganize the db this is a pk/fk issue
+            
+            if search_query.isdigit():
+                search_query_int = int(search_query)
+                query |= Q(id=search_query_int) | Q(quantity=search_query_int)
+            
+            items = items.filter(query)
 
         if sort_order == 'desc':
             sort_by = f'-{sort_by}'
             
-        # Apply sorting
         items = items.order_by(sort_by)
-
-        # Determine the next sort order for template
+        
         next_sort_order = 'desc' if sort_order == 'asc' else 'asc'
 
-        # Filter items with low inventory
         low_inventory = items.filter(quantity__lte=LOW_QUANTITY)
-
-        # Generate messages for low inventory
+        low_inventory_ids = low_inventory.values_list('id', flat=True)
         low_inventory_count = low_inventory.count()
         if low_inventory_count > 0:
             message = f'{low_inventory_count} item has low inventory' if low_inventory_count == 1 else f'{low_inventory_count} items have low inventory'
             messages.error(request, message)
-
-        # Extract IDs for items with low inventory, for conditional styling in the template
-        low_inventory_ids = low_inventory.values_list('id', flat=True)
 
         return render(request, 'inventory/dashboard.html', {
             'items': items,
@@ -61,6 +62,7 @@ class Dashboard(LoginRequiredMixin, View):
             'search_query': search_query,
             'next_sort_order': next_sort_order
         })
+
     
 class SignUpView(View):
 	def get(self, request):
