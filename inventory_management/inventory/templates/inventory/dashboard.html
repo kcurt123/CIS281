@@ -24,18 +24,17 @@
       </form>
       <a href="{% url 'add-item' %}" class="btn btn-primary">+</a>
     </div>
-    
     <table class="table table-hover table-striped">
       <thead>
         <tr>
-          <th scope="col"><a href="?sort=id">ID</a></th>
-          <th scope="col"><a href="?sort=name">Name</a></th>
-          <th scope="col"><a href="?sort=quantity">Qty</a></th>
-          <th scope="col"><a href="?sort=category">Category</a></th>
-          <th scope="col"><a href="?sort=barcode">Barcode</a></th>
-          <th scope="col"><a href="?sort=location">Location</a></th>
-          <th scope="col"><a href="?sort=supplier">Supplier</a></th>
-          <th scope="col"><a href="?sort=notes">Notes</a></th>
+          <th scope="col"><a href="?sort=id&order={{ next_sort_order }}">ID</a></th>
+          <th scope="col"><a href="?sort=name&order={{ next_sort_order }}">Name</a></th>
+          <th scope="col"><a href="?sort=quantity&order={{ next_sort_order }}">Qty</a></th>
+          <th scope="col"><a href="?sort=category&order={{ next_sort_order }}">Category</a></th>
+          <th scope="col"><a href="?sort=barcode&order={{ next_sort_order }}">Barcode</a></th>
+          <th scope="col"><a href="?sort=location&order={{ next_sort_order }}">Location</a></th>
+          <th scope="col"><a href="?sort=supplier&order={{ next_sort_order }}">Supplier</a></th>
+          <th scope="col"><a href="?sort=notes&order={{ next_sort_order }}">Notes</a></th>
         </tr>
       </thead>
       <tbody>

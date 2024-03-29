@@ -23,6 +23,7 @@ class ItemsOutView(View):
 class Dashboard(LoginRequiredMixin, View):
     def get(self, request):
         # Capture the sort and search query parameters
+        sort_order = request.GET.get('order', 'asc')  # Default sort order 'asc'
         sort_by = request.GET.get('sort', 'id')  # Default sort by 'id'
         search_query = request.GET.get('search', '')
 
@@ -33,8 +34,14 @@ class Dashboard(LoginRequiredMixin, View):
         if search_query:
             items = items.filter(name__icontains=search_query)
 
+        if sort_order == 'desc':
+            sort_by = f'-{sort_by}'
+            
         # Apply sorting
         items = items.order_by(sort_by)
+
+        # Determine the next sort order for template
+        next_sort_order = 'desc' if sort_order == 'asc' else 'asc'
 
         # Filter items with low inventory
         low_inventory = items.filter(quantity__lte=LOW_QUANTITY)
@@ -51,9 +58,10 @@ class Dashboard(LoginRequiredMixin, View):
         return render(request, 'inventory/dashboard.html', {
             'items': items,
             'low_inventory_ids': low_inventory_ids,
-            'search_query': search_query  # Pass the search query to the template to maintain the search term in the search box
+            'search_query': search_query,
+            'next_sort_order': next_sort_order
         })
-
+    
 class SignUpView(View):
 	def get(self, request):
 		form = UserRegisterForm()
