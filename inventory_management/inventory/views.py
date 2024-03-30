@@ -30,16 +30,26 @@ class Dashboard(LoginRequiredMixin, View):
         items = InventoryItem.objects.filter(user=request.user)
 
         if search_query:
-            query = Q(name__icontains=search_query) | \
-                    Q(barcode__icontains=search_query) | \
-                    Q(location__icontains=search_query)
-                    # name, barcode ,category works but but errors for the rest 
-					# reorganize the db this is a pk/fk issue
-            
-            if search_query.isdigit():
+            query = (
+                Q(name__icontains=search_query) | \
+                Q(barcode__icontains=search_query) | \
+                Q(location__icontains=search_query) | \
+                Q(notes__icontains=search_query) | \
+                Q(supplier__name__icontains=search_query) | \
+                Q(category__name__icontains=search_query) 
+                # name, barcode ,category works but but errors for the rest 
+                # reorganize the db this is a pk/fk issue
+            )
+
+            # Attempt to add searches for integer fields
+            try:
                 search_query_int = int(search_query)
-                query |= Q(id=search_query_int) | Q(quantity=search_query_int)
-            
+                query |= Q(quantity=search_query_int)
+                # Add other integer fields comparisons here if needed
+            except ValueError:
+                # If conversion fails, ignore the integer fields
+                pass
+
             items = items.filter(query)
 
         if sort_order == 'desc':
