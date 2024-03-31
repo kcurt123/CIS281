@@ -33,22 +33,21 @@ class Dashboard(LoginRequiredMixin, View):
             query = (
                 Q(name__icontains=search_query) | \
                 Q(barcode__icontains=search_query) | \
-                Q(location__icontains=search_query) | \
-                Q(notes__icontains=search_query) | \
+                Q(category__name__icontains=search_query) | \
                 Q(supplier__name__icontains=search_query) | \
-                Q(category__name__icontains=search_query) 
-                # name, barcode ,category works but but errors for the rest 
-                # reorganize the db this is a pk/fk issue
+                Q(location__location__icontains=search_query) | \
+                Q(notes__icontains=search_query)
             )
 
             # Attempt to add searches for integer fields
             try:
                 search_query_int = int(search_query)
                 query |= Q(quantity=search_query_int)
-                # Add other integer fields comparisons here if needed
+                # If you have other integer fields to search, add them here
             except ValueError:
                 # If conversion fails, ignore the integer fields
                 pass
+
 
             items = items.filter(query)
 
