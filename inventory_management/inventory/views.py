@@ -3,8 +3,9 @@ from django.urls import reverse_lazy
 from django.views.generic import TemplateView, View, CreateView, UpdateView, DeleteView
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import UserRegisterForm, InventoryItemForm
-from .models import InventoryItem, Category
+from django.contrib.auth.decorators import login_required, permission_required
+from .forms import UserRegisterForm, InventoryItemForm, CheckoutForm
+from .models import InventoryItem, Category, Checkout
 from inventory_management.settings import LOW_QUANTITY
 from django.db.models import Q
 from django.contrib import messages
@@ -16,10 +17,6 @@ import json
 
 class Index(TemplateView):
 	template_name = 'inventory/index.html'
-
-class ItemsOutView(View):
-	def get(self, request):
-		return render(request, 'inventory/itemsout.html') 
 
 class Dashboard(LoginRequiredMixin, View):
     def get(self, request):
@@ -157,3 +154,22 @@ def check_item_by_barcode(request):
         except InventoryItem.DoesNotExist:
             return JsonResponse({'exists': False})
     return JsonResponse({'error': 'This endpoint only accepts POST requests.'}, status=405)
+
+@login_required
+@permission_required('inventory.can_checkout', raise_exception=True)
+def checkout_item(request, item_id):
+    item = InventoryItem.objects.get(pk=item_id)
+    if request.method == 'POST':
+        form = CheckoutForm(request.POST)
+        if form.is_valid():
+            checkout = form.save(commit=False)
+            checkout.item = item
+            checkout.save()
+            return redirect('inventory/dashboard.html')
+    else:
+        form = CheckoutForm()
+    return render(request, 'inventory/checkout_item.html', {'form': form, 'item': item})
+
+def items_out_list(request):
+    checked_out_items = Checkout.objects.filter(returned_at__isnull=True)  # Example query
+    return render(request, 'inventory/itemsout.html', {'checked_out_items': checked_out_items})

@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import Category, InventoryItem
+from .models import Category, InventoryItem, Checkout
 
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField()
@@ -18,3 +18,10 @@ class InventoryItemForm(forms.ModelForm):
     class Meta:
         model = InventoryItem
         fields = ['name', 'quantity', 'category', 'barcode', 'location', 'supplier', 'notes']
+
+class CheckoutForm(forms.ModelForm):
+    checked_out_to = forms.ModelChoiceField(queryset=User.objects.all(), required=True)
+
+    class Meta:
+        model = Checkout
+        fields = ['checked_out_to']
