@@ -13,6 +13,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.http import HttpResponseBadRequest
+from django.utils import timezone
 import json
 
 class Index(TemplateView):
@@ -156,7 +157,7 @@ def check_item_by_barcode(request):
     return JsonResponse({'error': 'This endpoint only accepts POST requests.'}, status=405)
 
 @login_required
-@permission_required('inventory.can_checkout', raise_exception=True)
+@permission_required('inventory.can_checkout_items', raise_exception=True)
 def checkout_item(request, item_id):
     item = InventoryItem.objects.get(pk=item_id)
     if request.method == 'POST':
@@ -164,10 +165,19 @@ def checkout_item(request, item_id):
         if form.is_valid():
             checkout = form.save(commit=False)
             checkout.item = item
+            checkout.checked_out_at = timezone.now()
             checkout.save()
-            return redirect('inventory/dashboard.html')
+            
+            # Update InventoryItem checkout status
+            item.is_checked_out = True
+            item.last_checked_out_by = request.user
+            item.last_checked_out_at = timezone.now()
+            item.save()
+            
+            messages.success(request, 'Item successfully checked out.')
+            return redirect('dashboard')
     else:
-        form = CheckoutForm()
+        form = CheckoutForm(initial={'checked_out_to': request.user})
     return render(request, 'inventory/checkout_item.html', {'form': form, 'item': item})
 
 def items_out_list(request):
