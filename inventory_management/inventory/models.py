@@ -56,9 +56,9 @@ class InventoryItem(models.Model):
 
 class Checkout(models.Model):
     item = models.ForeignKey(InventoryItem, on_delete=models.CASCADE, related_name='checkouts')
-    checked_out_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='checkouts')
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='checkouts')  # Renamed from checked_out_to
     checked_out_at = models.DateTimeField(auto_now_add=True)
     returned_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
-        return f"{self.item.name} checked out to {self.checked_out_to.username}"
+        return f"{self.item.name} checked out to {self.user.username}"

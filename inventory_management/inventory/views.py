@@ -70,7 +70,6 @@ class Dashboard(LoginRequiredMixin, View):
             'next_sort_order': next_sort_order
         })
 
-    
 class SignUpView(View):
 	def get(self, request):
 		form = UserRegisterForm()
@@ -134,7 +133,7 @@ def update_inventory(request):
             data = json.loads(request.body.decode('utf-8'))  # Decode and load the JSON data
             barcode = data.get('barcode')
 
-            # Here you would add your logic to handle the barcode,
+            # Here add logic to handle the barcode,
             # such as looking up the InventoryItem, updating quantities, etc.
 
             # For demonstration, let's just return the barcode in the response
@@ -163,23 +162,26 @@ def checkout_item(request, item_id):
     if request.method == 'POST':
         form = CheckoutForm(request.POST)
         if form.is_valid():
-            checkout = form.save(commit=False)
-            checkout.item = item
-            checkout.checked_out_at = timezone.now()
-            checkout.save()
-            
-            # Update InventoryItem checkout status
-            item.is_checked_out = True
-            item.last_checked_out_by = request.user
-            item.last_checked_out_at = timezone.now()
-            item.save()
-            
-            messages.success(request, 'Item successfully checked out.')
-            return redirect('dashboard')
+            if item.quantity > 0:  # Make sure there are items available to checkout
+                item.quantity -= 1
+                item.is_checked_out = True
+                item.last_checked_out_by = request.user
+                item.last_checked_out_at = timezone.now()
+                item.save()
+                
+                checkout = form.save(commit=False)
+                checkout.item = item
+                checkout.checked_out_at = timezone.now()
+                checkout.save()
+                
+                messages.success(request, 'Item successfully checked out.')
+                return redirect('dashboard')
+            else:
+                messages.error(request, 'This item is not available for checkout.')
     else:
         form = CheckoutForm(initial={'checked_out_to': request.user})
     return render(request, 'inventory/checkout_item.html', {'form': form, 'item': item})
 
-def items_out_list(request):
-    checked_out_items = Checkout.objects.filter(returned_at__isnull=True)  # Example query
-    return render(request, 'inventory/itemsout.html', {'checked_out_items': checked_out_items})
+def list_checked_out_items(request):
+    checkouts = Checkout.objects.select_related('item', 'user').all()
+    return render(request, 'inventory/itemsout.html', {'checkouts': checkouts})
