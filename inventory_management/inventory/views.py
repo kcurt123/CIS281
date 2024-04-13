@@ -171,11 +171,13 @@ def checkout_item(request, item_id):
                 
                 checkout = form.save(commit=False)
                 checkout.item = item
+                checkout.checked_out_to = request.user
+                checkout.checked_out_by = request.user
                 checkout.checked_out_at = timezone.now()
                 checkout.save()
                 
                 messages.success(request, 'Item successfully checked out.')
-                return redirect('dashboard')
+                return redirect('items_out_list')
             else:
                 messages.error(request, 'This item is not available for checkout.')
     else:

@@ -8,6 +8,7 @@
         <tr>
             <th>Item</th>
             <th>Checked Out By</th>
+            <th>Checked Out To</th>
             <th>Checked Out At</th>
         </tr>
     </thead>
@@ -15,7 +16,8 @@
         {% for checkout in checkouts %}
         <tr>
             <td>{{ checkout.item.name }}</td>
-            <td>{{ checkout.user.username }}</td>
+            <td>{{ checkout.checked_out_to.username }}</td>
+            <td>{{ checkout.checked_out_by.username }}</td>
             <td>{{ checkout.checked_out_at }}</td>
         </tr>
         {% endfor %}

@@ -17,4 +17,5 @@ urlpatterns = [
     path('items-out/', list_checked_out_items, name='items_out_list'),
     path('api/inventory/', views.update_inventory, name='update_inventory'),
     path('check-item-by-barcode/', check_item_by_barcode, name='check_item_by_barcode'),
+    #path('items-out/', list_checked_out_items, name='items_out'),
 ]
