@@ -22,53 +22,33 @@ class Index(TemplateView):
 class Dashboard(LoginRequiredMixin, View):
     def get(self, request):
         sort_order = request.GET.get('order', 'asc')
-        sort_by = request.GET.get('sort', 'id')
+        sort_by = request.GET.get('sort', 'pc_name')  # Default sort field updated to 'pc_name'
         search_query = request.GET.get('search', '')
 
         items = InventoryItem.objects.filter(user=request.user)
 
         if search_query:
             query = (
-                Q(name__icontains=search_query) | \
+                Q(pc_name__icontains=search_query) | \
                 Q(barcode__icontains=search_query) | \
                 Q(category__name__icontains=search_query) | \
                 Q(supplier__name__icontains=search_query) | \
-                Q(location__location__icontains=search_query) | \
+                Q(department__location__icontains=search_query) | \
                 Q(notes__icontains=search_query)
             )
-
-            # Attempt to add searches for integer fields
-            try:
-                search_query_int = int(search_query)
-                query |= Q(quantity=search_query_int)
-                # If you have other integer fields to search, add them here
-            except ValueError:
-                # If conversion fails, ignore the integer fields
-                pass
-
-
             items = items.filter(query)
 
         if sort_order == 'desc':
             sort_by = f'-{sort_by}'
-            
+        
         items = items.order_by(sort_by)
         
-        next_sort_order = 'desc' if sort_order == 'asc' else 'asc'
-
-        low_inventory = items.filter(quantity__lte=LOW_QUANTITY)
-        low_inventory_ids = low_inventory.values_list('id', flat=True)
-        low_inventory_count = low_inventory.count()
-        if low_inventory_count > 0:
-            message = f'{low_inventory_count} item has low inventory' if low_inventory_count == 1 else f'{low_inventory_count} items have low inventory'
-            messages.error(request, message)
-
         return render(request, 'inventory/dashboard.html', {
             'items': items,
-            'low_inventory_ids': low_inventory_ids,
             'search_query': search_query,
-            'next_sort_order': next_sort_order
+            'next_sort_order': 'desc' if sort_order == 'asc' else 'asc'
         })
+
 
 class SignUpView(View):
 	def get(self, request):
@@ -162,8 +142,7 @@ def checkout_item(request, item_id):
     if request.method == 'POST':
         form = CheckoutForm(request.POST)
         if form.is_valid():
-            if item.quantity > 0:  # Make sure there are items available to checkout
-                item.quantity -= 1
+            if not item.is_checked_out:  # Check if the item is not already checked out
                 item.is_checked_out = True
                 item.last_checked_out_by = request.user
                 item.last_checked_out_at = timezone.now()
@@ -177,9 +156,10 @@ def checkout_item(request, item_id):
                 checkout.save()
                 
                 messages.success(request, 'Item successfully checked out.')
-                return redirect('items_out_list')
+                return redirect('dashboard')
             else:
                 messages.error(request, 'This item is not available for checkout.')
+        return render(request, 'inventory/checkout_item.html', {'form': form, 'item': item})
     else:
         form = CheckoutForm(initial={'checked_out_to': request.user})
     return render(request, 'inventory/checkout_item.html', {'form': form, 'item': item})

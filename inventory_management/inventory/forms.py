@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import Category, InventoryItem, Checkout
+from .models import Category, Location, Supplier, InventoryItem, Checkout
 
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField()
@@ -12,16 +12,16 @@ class UserRegisterForm(UserCreationForm):
 
 class InventoryItemForm(forms.ModelForm):
     category = forms.ModelChoiceField(queryset=Category.objects.all(), initial=0)
-    # Assuming the barcode can be optionally provided, you can include it like this:
-    barcode = forms.CharField(max_length=200, required=False, widget=forms.HiddenInput())
+    department = forms.ModelChoiceField(queryset=Location.objects.all(), required=False)
+    supplier = forms.ModelChoiceField(queryset=Supplier.objects.all(), required=False)
 
     class Meta:
         model = InventoryItem
-        fields = ['name', 'quantity', 'category', 'barcode', 'location', 'supplier', 'notes']
+        fields = ['pc_name', 'domain_user', 'user', 'notes', 'department', 'device_type', 'costs', 'new_computer', 'date_delivered', 'is_computer', 'has_dock', 'has_lcd', 'has_lcd2', 'has_stand', 'has_keyboard', 'has_cd', 'serial_number', 'model_number', 'is_checked_out', 'last_checked_out_by', 'last_checked_out_at']
 
 class CheckoutForm(forms.ModelForm):
     checked_out_to = forms.ModelChoiceField(queryset=User.objects.all(), required=True)
-
+    
     class Meta:
         model = Checkout
-        fields = ['checked_out_to']
+        fields = ['item', 'user', 'checked_out_by', 'checked_out_to']

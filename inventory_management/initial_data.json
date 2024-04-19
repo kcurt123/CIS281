@@ -1,592 +1,82 @@
 [
-    {
+  {
       "model": "inventory.category",
       "pk": 1,
       "fields": {
-        "name": "Electronics"
+          "name": "Electronics"
       }
-    },
-    {
-      "model": "inventory.category",
-      "pk": 2,
-      "fields": {
-        "name": "Furniture"
-      }
-    },
-    {
+  },
+  {
       "model": "inventory.location",
       "pk": 1,
       "fields": {
-        "location": "Warehouse A"
+          "location": "Warehouse 1"
       }
-    },
-    {
-      "model": "inventory.location",
-      "pk": 2,
-      "fields": {
-        "location": "Warehouse B"
-      }
-    },
-    {
+  },
+  {
       "model": "inventory.supplier",
       "pk": 1,
       "fields": {
-        "name": "Gadgets Inc.",
-        "website": "https://www.gadgetsinc.com",
-        "contact_info": "support@gadgetsinc.com"
+          "name": "Best Computers",
+          "website": "http://www.bestcomputers.com",
+          "contact_info": "Phone: 123-456-7890"
       }
-    },
-    {
-      "model": "inventory.supplier",
-      "pk": 2,
-      "fields": {
-        "name": "Furnishings LLC",
-        "website": "https://www.furnishingsllc.com",
-        "contact_info": "contact@furnishingsllc.com"
-      }
-    },
-    {
+  },
+  {
       "model": "inventory.inventoryitem",
       "pk": 1,
       "fields": {
-        "name": "Laptop",
-        "quantity": 15,
-        "category": 1,
-        "date_created": "2024-03-30T12:00:00Z",
-        "user": 1,
-        "barcode": "1234567890123",
-        "location": 1,
-        "supplier": 1,
-        "notes": "Latest model",
-        "serial_number": "SN12345",
-        "model_number": "MN67890"
-      }
-    },
-    {
-      "model": "inventory.inventoryitem",
-      "pk": 2,
-      "fields": {
-        "name": "Office Chair",
-        "quantity": 10,
-        "category": 2,
-        "date_created": "2024-04-01T12:00:00Z",
-        "user": 1,
-        "barcode": "9876543210987",
-        "location": 2,
-        "supplier": 2,
-        "notes": "Ergonomic design",
-        "serial_number": "SN54321",
-        "model_number": "MN98765"
-      }
-    },
-    {
-      "model": "inventory.inventoryitem",
-      "pk": 3,
-      "fields": {
-        "name": "Tablet",
-        "quantity": 20,
-        "category": 1,
-        "date_created": "2024-03-25T12:00:00Z",
-        "user": 1,
-        "barcode": "0123456789012",
-        "location": 1,
-        "supplier": 1,
-        "notes": "High resolution screen",
-        "serial_number": "SN67890",
-        "model_number": "MN54321"
-      }
-    },
-    {
-      "model": "inventory.inventoryitem",
-      "pk": 4,
-      "fields": {
-        "name": "Desk",
-        "quantity": 5,
-        "category": 2,
-        "date_created": "2024-04-05T12:00:00Z",
-        "user": 1,
-        "barcode": "8765432109876",
-        "location": 2,
-        "supplier": 2,
-        "notes": "Solid wood construction",
-        "serial_number": "SN09876",
-        "model_number": "MN24680"
-      }
-    },
-    {
-      "model": "inventory.inventoryitem",
-      "pk": 5,
-      "fields": {
-        "name": "Smartphone",
-        "quantity": 30,
-        "category": 1,
-        "date_created": "2024-03-20T12:00:00Z",
-        "user": 1,
-        "barcode": "5678901234567",
-        "location": 1,
-        "supplier": 1,
-        "notes": "5G enabled",
-        "serial_number": "SN13579",
-        "model_number": "MN97531"
-      }
-    },
-    {
-      "model": "inventory.inventoryitem",
-      "pk": 6,
-      "fields": {
-        "name": "Sofa",
-        "quantity": 8,
-        "category": 2,
-        "date_created": "2024-04-10T12:00:00Z",
-        "user": 1,
-        "barcode": "2345678901234",
-        "location": 2,
-        "supplier": 2,
-        "notes": "Leather upholstery",
-        "serial_number": "SN24680",
-        "model_number": "MN13579"
-      }
-    },
-    {
-      "model": "inventory.inventoryitem",
-      "pk": 7,
-      "fields": {
-        "name": "Desktop Computer",
-        "quantity": 25,
-        "category": 1,
-        "date_created": "2024-03-15T12:00:00Z",
-        "user": 1,
-        "barcode": "6789012345678",
-        "location": 1,
-        "supplier": 1,
-        "notes": "High-performance CPU",
-        "serial_number": "SN35791",
-        "model_number": "MN80246"
-      }
-    },
-    {
-      "model": "inventory.inventoryitem",
-      "pk": 8,
-      "fields": {
-        "name": "Bookshelf",
-        "quantity": 12,
-        "category": 2,
-        "date_created": "2024-04-15T12:00:00Z",
-        "user": 1,
-        "barcode": "7890123456789",
-        "location": 2,
-        "supplier": 2,
-        "notes": "Adjustable shelves",
-        "serial_number": "SN80246",
-        "model_number": "MN35791"
-      }
-    },
-    {
-      "model": "inventory.inventoryitem",
-      "pk": 9,
-      "fields": {
-        "name": "Television",
-        "quantity": 18,
-        "category": 1,
-        "date_created": "2024-03-10T12:00:00Z",
-        "user": 1,
-        "barcode": "8901234567890",
-        "location": 1,
-        "supplier": 1,
-        "notes": "Smart TV with voice control",
-        "serial_number": "SN80246",
-        "model_number": "MN35791"
-      }
-    },
-    {
-      "model": "inventory.inventoryitem",
-      "pk": 10,
-      "fields": {
-        "name": "Dining Table",
-        "quantity": 7,
-        "category": 2,
-        "date_created": "2024-04-20T12:00:00Z",
-        "user": 1,
-        "barcode": "9012345678901",
-        "location": 2,
-        "supplier": 2,
-        "notes": "Seats six people",
-        "serial_number": "SN80246",
-        "model_number": "MN35791"
-      }
-    },
-    {
-      "model": "inventory.inventoryitem",
-      "pk": 11,
-      "fields": {
-        "name": "Camera",
-        "quantity": 22,
-        "category": 1,
-        "date_created": "2024-03-05T12:00:00Z",
-        "user": 1,
-        "barcode": "1234567890123",
-        "location": 1,
-        "supplier": 1,
-        "notes": "20MP resolution",
-        "serial_number": "SN80246",
-        "model_number": "MN35791"
-      }
-    },
-    {
-      "model": "inventory.inventoryitem",
-      "pk": 12,
-      "fields": {
-        "name": "Recliner",
-        "quantity": 9,
-        "category": 2,
-        "date_created": "2024-04-25T12:00:00Z",
-        "user": 1,
-        "barcode": "2345678901234",
-        "location": 2,
-        "supplier": 2,
-        "notes": "Power reclining feature",
-        "serial_number": "SN80246",
-        "model_number": "MN35791"
-      }
-    },
-    {
-        "model": "inventory.inventoryitem",
-        "pk": 13,
-        "fields": {
-          "name": "Microwave",
-          "quantity": 14,
-          "category": 1,
-          "date_created": "2024-03-01T12:00:00Z",
+          "pc_name": "Office Laptop 1",
+          "domain_user": "officeuser1",
           "user": 1,
-          "barcode": "3456789012345",
-          "location": 1,
-          "supplier": 1,
-          "notes": "1000 watts power",
-          "serial_number": "SN80246",
-          "model_number": "MN35791"
-        }
-      },
-      {
-        "model": "inventory.inventoryitem",
-        "pk": 14,
-        "fields": {
-          "name": "Coffee Table",
-          "quantity": 11,
-          "category": 2,
-          "date_created": "2024-04-30T12:00:00Z",
-          "user": 1,
-          "barcode": "4567890123456",
-          "location": 2,
-          "supplier": 2,
-          "notes": "Glass top",
-          "serial_number": "SN80246",
-          "model_number": "MN35791"
-        }
-      },
-      {
-        "model": "inventory.inventoryitem",
-        "pk": 15,
-        "fields": {
-          "name": "Printer",
-          "quantity": 28,
-          "category": 1,
-          "date_created": "2024-02-28T12:00:00Z",
-          "user": 1,
-          "barcode": "5678901234567",
-          "location": 1,
-          "supplier": 1,
-          "notes": "Color laser",
-          "serial_number": "SN80246",
-          "model_number": "MN35791"
-        }
-      },
-      {
-        "model": "inventory.inventoryitem",
-        "pk": 16,
-        "fields": {
-          "name": "Dresser",
-          "quantity": 6,
-          "category": 2,
-          "date_created": "2024-05-05T12:00:00Z",
-          "user": 1,
-          "barcode": "6789012345678",
-          "location": 2,
-          "supplier": 2,
-          "notes": "Six drawers",
-          "serial_number": "SN80246",
-          "model_number": "MN35791"
-        }
-      },
-      {
-        "model": "inventory.inventoryitem",
-        "pk": 17,
-        "fields": {
-          "name": "Table Lamp",
-          "quantity": 9,
-          "category": 2,
-          "date_created": "2024-05-10T12:00:00Z",
-          "user": 1,
-          "barcode": "7890123456789",
-          "location": 2,
-          "supplier": 2,
-          "notes": "Adjustable brightness",
-          "serial_number": "SN80246",
-          "model_number": "MN35791"
-        }
-      },
-      {
-        "model": "inventory.inventoryitem",
-        "pk": 18,
-        "fields": {
-          "name": "DVD Player",
-          "quantity": 16,
-          "category": 1,
-          "date_created": "2024-02-25T12:00:00Z",
-          "user": 1,
-          "barcode": "8901234567890",
-          "location": 1,
-          "supplier": 1,
-          "notes": "Supports Blu-ray",
-          "serial_number": "SN80246",
-          "model_number": "MN35791"
-        }
-      },
-      {
-        "model": "inventory.inventoryitem",
-        "pk": 19,
-        "fields": {
-          "name": "Couch",
-          "quantity": 7,
-          "category": 2,
-          "date_created": "2024-05-15T12:00:00Z",
-          "user": 1,
-          "barcode": "9012345678901",
-          "location": 2,
-          "supplier": 2,
-          "notes": "Three-seater",
-          "serial_number": "SN80246",
-          "model_number": "MN35791"
-        }
-      },
-      {
-        "model": "inventory.inventoryitem",
-        "pk": 20,
-        "fields": {
-          "name": "Blender",
-          "quantity": 13,
-          "category": 1,
-          "date_created": "2024-02-20T12:00:00Z",
-          "user": 1,
-          "barcode": "0123456789012",
-          "location": 1,
-          "supplier": 1,
-          "notes": "Multiple speed settings",
-          "serial_number": "SN80246",
-          "model_number": "MN35791"
-        }
-      },
-      {
-        "model": "inventory.inventoryitem",
-        "pk": 21,
-        "fields": {
-          "name": "End Table",
-          "quantity": 10,
-          "category": 2,
-          "date_created": "2024-05-20T12:00:00Z",
-          "user": 1,
-          "barcode": "1234567890123",
-          "location": 2,
-          "supplier": 2,
-          "notes": "Wooden finish",
-          "serial_number": "SN80246",
-          "model_number": "MN35791"
-        }
-      },
-      {
-        "model": "inventory.inventoryitem",
-        "pk": 22,
-        "fields": {
-          "name": "Home Theater System",
-          "quantity": 19,
-          "category": 1,
-          "date_created": "2024-02-15T12:00:00Z",
-          "user": 1,
-          "barcode": "2345678901234",
-          "location": 1,
-          "supplier": 1,
-          "notes": "5.1 surround sound",
-          "serial_number": "SN80246",
-          "model_number": "MN35791"
-        }
-    },
-    {
-        "model": "inventory.inventoryitem",
-        "pk": 23,
-        "fields": {
-        "name": "Air Conditioner",
-        "quantity": 24,
-        "category": 1,
-        "date_created": "2024-02-10T12:00:00Z",
-        "user": 1,
-        "barcode": "3456789012345",
-        "location": 1,
-        "supplier": 1,
-        "notes": "Energy efficient",
-        "serial_number": "SN80246",
-        "model_number": "MN35791"
-        }
-    },
-    {
-        "model": "inventory.inventoryitem",
-        "pk": 24,
-        "fields": {
-        "name": "Desk Lamp",
-        "quantity": 15,
-        "category": 2,
-        "date_created": "2024-05-25T12:00:00Z",
-        "user": 1,
-        "barcode": "4567890123456",
-        "location": 2,
-        "supplier": 2,
-        "notes": "LED light",
-        "serial_number": "SN80246",
-        "model_number": "MN35791"
-        }
-    },
-    {
-        "model": "inventory.inventoryitem",
-        "pk": 25,
-        "fields": {
-        "name": "Security Camera",
-        "quantity": 17,
-        "category": 1,
-        "date_created": "2024-02-05T12:00:00Z",
-        "user": 1,
-        "barcode": "5678901234567",
-        "location": 1,
-        "supplier": 1,
-        "notes": "Motion detection",
-        "serial_number": "SN80246",
-        "model_number": "MN35791"
-        }
-    },
-    {
-        "model": "inventory.inventoryitem",
-        "pk": 26,
-        "fields": {
-        "name": "Nightstand",
-        "quantity": 8,
-        "category": 2,
-        "date_created": "2024-06-01T12:00:00Z",
-        "user": 1,
-        "barcode": "6789012345678",
-        "location": 2,
-        "supplier": 2,
-        "notes": "Drawer for storage",
-        "serial_number": "SN80246",
-        "model_number": "MN35791"
-        }
-    },
-    {
-        "model": "inventory.inventoryitem",
-        "pk": 27,
-        "fields": {
-        "name": "Vacuum Cleaner",
-        "quantity": 11,
-        "category": 1,
-        "date_created": "2024-01-31T12:00:00Z",
-        "user": 1,
-        "barcode": "7890123456789",
-        "location": 1,
-        "supplier": 1,
-        "notes": "Bagless design",
-        "serial_number": "SN80246",
-        "model_number": "MN35791"
-        }
-    },
-    {
-        "model": "inventory.inventoryitem",
-        "pk": 28,
-        "fields": {
-        "name": "Kitchen Table",
-        "quantity": 9,
-        "category": 2,
-        "date_created": "2024-06-05T12:00:00Z",
-        "user": 1,
-        "barcode": "8901234567890",
-        "location": 2,
-        "supplier": 2,
-        "notes": "Foldable sides",
-        "serial_number": "SN80246",
-        "model_number": "MN35791"
-        }
-    },
-    {
-        "model": "inventory.inventoryitem",
-        "pk": 29,
-        "fields": {
-        "name": "Toaster",
-        "quantity": 14,
-        "category": 1,
-        "date_created": "2024-01-26T12:00:00Z",
-        "user": 1,
-        "barcode": "0123456789012",
-        "location": 1,
-        "supplier": 1,
-        "notes": "Wide slots",
-        "serial_number": "SN80246",
-        "model_number": "MN35791"
-        }
-    },
-    {
-        "model": "inventory.inventoryitem",
-        "pk": 30,
-        "fields": {
-        "name": "Armchair",
-        "quantity": 6,
-        "category": 2,
-        "date_created": "2024-06-10T12:00:00Z",
-        "user": 1,
-        "barcode": "1234567890123",
-        "location": 2,
-        "supplier": 2,
-        "notes": "Upholstered fabric",
-        "serial_number": "SN80246",
-        "model_number": "MN35791"
-        }
-    },
-    {
-        "model": "inventory.inventoryitem",
-        "pk": 31,
-        "fields": {
-        "name": "Projector",
-        "quantity": 18,
-        "category": 1,
-        "date_created": "2024-01-21T12:00:00Z",
-        "user": 1,
-        "barcode": "2345678901234",
-        "location": 1,
-        "supplier": 1,
-        "notes": "Full HD resolution",
-        "serial_number": "SN80246",
-        "model_number": "MN35791"
-        }
-    },
-    {
-        "model": "inventory.inventoryitem",
-        "pk": 32,
-        "fields": {
-        "name": "Shoe Rack",
-        "quantity": 7,
-        "category": 2,
-        "date_created": "2024-06-15T12:00:00Z",
-        "user": 1,
-        "barcode": "3456789012345",
-        "location": 2,
-        "supplier": 2,
-        "notes": "Space-saving design",
-        "serial_number": "SN80246",
-        "model_number": "MN35791"
-        }
+          "notes": "",
+          "department": 1,
+          "device_type": "Laptop",
+          "costs": "600.00",
+          "new_computer": false,
+          "date_delivered": "2024-01-01T00:00:00Z",
+          "is_computer": true,
+          "has_dock": true,
+          "has_lcd": false,
+          "has_lcd2": false,
+          "has_stand": false,
+          "has_keyboard": true,
+          "has_cd": false,
+          "serial_number": "SN123456",
+          "model_number": "MN7891011",
+          "is_checked_out": false,
+          "last_checked_out_by": null,
+          "last_checked_out_at": null
+      }
+  },
+  {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+        "password": "pbkdf2_sha256$260000$someRandomString$hashedPasswordString==",
+        "last_login": null,
+        "is_superuser": true,
+        "username": "admin",
+        "first_name": "Admin",
+        "last_name": "User",
+        "email": "admin@example.com",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2024-01-01T00:00:00Z",
+        "groups": [],
+        "user_permissions": []
     }
+},
+
+  {
+      "model": "inventory.checkout",
+      "pk": 1,
+      "fields": {
+          "item": 1,
+          "user": 1,
+          "checked_out_at": "2024-04-01T12:00:00Z",
+          "checked_out_by": 1,
+          "checked_out_to": 1
+      }
+  }
 ]

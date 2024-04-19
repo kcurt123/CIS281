@@ -2,25 +2,35 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<h2>Checked Out Items</h2>
-<table>
-    <thead>
-        <tr>
-            <th>Item</th>
-            <th>Checked Out By</th>
-            <th>Checked Out To</th>
-            <th>Checked Out At</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for checkout in checkouts %}
-        <tr>
-            <td>{{ checkout.item.name }}</td>
-            <td>{{ checkout.checked_out_to.username }}</td>
-            <td>{{ checkout.checked_out_by.username }}</td>
-            <td>{{ checkout.checked_out_at }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div class="container mt-4">
+    <h2>Checked Out Items</h2>
+    {% if checkouts.exists %}
+    <table class="table table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>PC Name</th>
+                <th>Checked Out By</th>
+                <th>Checked Out To</th>
+                <th>Checked Out At</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for checkout in checkouts %}
+            <tr>
+                <td>{{ checkout.item.pc_name }}</td>
+                <td>{{ checkout.checked_out_by.username }}</td>
+                <td>{{ checkout.checked_out_to.username }}</td>
+                <td>{{ checkout.checked_out_at|date:"M d, Y H:i" }}</td>
+                <td>
+                    <a href="{% url 'return_item' checkout.item.id %}" class="btn btn-info btn-sm">Return Item</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="alert alert-info">No items are currently checked out.</div>
+    {% endif %}
+</div>
 {% endblock %}
