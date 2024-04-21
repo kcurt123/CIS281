@@ -33,6 +33,7 @@ class Dashboard(LoginRequiredMixin, View):
                 Q(barcode__icontains=search_query) | \
                 Q(category__name__icontains=search_query) | \
                 Q(supplier__name__icontains=search_query) | \
+                Q(location_name_icontains=search_query) | \
                 Q(department__location__icontains=search_query) | \
                 Q(notes__icontains=search_query)
             )
