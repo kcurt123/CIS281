@@ -1,0 +1,53 @@
+{% extends 'inventory/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Checked Out Items</h2>
+    {% if messages %}
+    <div class="row mt-3">
+        {% for message in messages %}
+        <div class="col-md-10 col-12 mx-auto alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% if checkouts.exists %}
+    <div class="d-flex justify-content-end mb-3">
+        <form method="GET" action="{% url 'checked-out-items' %}" class="me-2">
+            <input type="text" name="search" placeholder="Search items..." value="{{ search_query }}">
+            <button type="submit" class="btn btn-secondary">Search</button>
+        </form>
+    </div>
+    <table class="table table-hover table-striped">
+        <thead>
+            <tr>
+                <th><a href="?sort=pc_name&order={{ next_sort_order }}">PC Name</a></th>
+                <th><a href="?sort=checked_out_by&order={{ next_sort_order }}">Checked Out By</a></th>
+                <th><a href="?sort=checked_out_to&order={{ next_sort_order }}">Checked Out To</a></th>
+                <th><a href="?sort=checked_out_at&order={{ next_sort_order }}">Checked Out At</a></th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for checkout in checkouts %}
+            <tr>
+                <td>{{ checkout.item.pc_name }}</td>
+                <td>{{ checkout.checked_out_by.username }}</td>
+                <td>{{ checkout.checked_out_to.username }}</td>
+                <td>{{ checkout.checked_out_at|date:"M d, Y H:i" }}</td>
+                <td>
+                    <a href="{% url 'return_item' checkout.item.id %}" class="btn btn-info btn-sm">Return Item</a>
+                    <a href="{% url 'edit-item' checkout.item.id %}" class="btn btn-outline-secondary btn-sm">Edit</a>
+                    <a href="{% url 'delete-item' checkout.item.id %}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="alert alert-info">No items are currently checked out.</div>
+    {% endif %}
+</div>
+{% endblock %}

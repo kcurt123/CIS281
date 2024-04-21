@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, View, CreateView, UpdateView, DeleteView
 from django.contrib.auth import authenticate, login, logout
@@ -165,6 +165,38 @@ def checkout_item(request, item_id):
         form = CheckoutForm(initial={'checked_out_to': request.user})
     return render(request, 'inventory/checkout_item.html', {'form': form, 'item': item})
 
-def list_checked_out_items(request):
-    checkouts = Checkout.objects.select_related('item', 'user').all()
-    return render(request, 'inventory/itemsout.html', {'checkouts': checkouts})
+def checked_out_items(request):
+    search_query = request.GET.get('search', '')
+    sort_order = request.GET.get('order', 'asc')
+    sort_by = request.GET.get('sort', 'checked_out_at')  # Default sort field updated
+
+    checkouts = Checkout.objects.all()
+    if search_query:
+        checkouts = checkouts.filter(
+            Q(item__pc_name__icontains=search_query) | 
+            Q(checked_out_by__username__icontains=search_query) |
+            Q(checked_out_to__username__icontains=search_query)
+        )
+
+    if sort_order == 'desc':
+        sort_by = f'-{sort_by}'
+
+    checkouts = checkouts.order_by(sort_by)
+
+    return render(request, 'inventory/checked_out_items.html', {
+        'checkouts': checkouts,
+        'search_query': search_query,
+        'next_sort_order': 'desc' if sort_order == 'asc' else 'asc'
+    })
+
+def return_item(request, item_id):
+    item = get_object_or_404(InventoryItem, pk=item_id)
+    if item.is_checked_out:
+        item.is_checked_out = False
+        item.save()
+        # Assuming you also want to record who and when an item was returned
+        Checkout.objects.filter(item=item, returned=False).update(returned=True)
+        messages.success(request, 'Item has been successfully returned.')
+    else:
+        messages.error(request, 'This item was not checked out.')
+    return redirect('checked-out-items')

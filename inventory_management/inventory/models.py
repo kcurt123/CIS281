@@ -68,6 +68,7 @@ class Checkout(models.Model):
     checked_out_at = models.DateTimeField(auto_now_add=True)
     checked_out_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='checked_out_by_user')
     checked_out_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='checked_out_to_user')
+    returned = models.BooleanField(default=False)
 
     def __str__(self):
         user_name = self.user.username if self.user else "Unknown"

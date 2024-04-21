@@ -10,7 +10,7 @@
                 {% if user.is_authenticated %}
                     <!-- Update the href value to 'items_out_list' which should be the name of your url for viewing items out -->
                     <li class="nav-item">
-                        <a class="btn btn-link nav-link" style="border: none; background: none;" href="{% url 'items_out_list' %}">Items Out</a>
+                        <a class="btn btn-link nav-link" style="border: none; background: none;" href="{% url 'checked-out-items' %}">Items Out</a>
                     </li>
 
                     <li class="nav-item">
