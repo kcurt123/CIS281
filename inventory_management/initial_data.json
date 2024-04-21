@@ -1,82 +1,62 @@
 [
-  {
-      "model": "inventory.category",
-      "pk": 1,
-      "fields": {
-          "name": "Electronics"
-      }
-  },
-  {
-      "model": "inventory.location",
-      "pk": 1,
-      "fields": {
-          "location": "Warehouse 1"
-      }
-  },
-  {
-      "model": "inventory.supplier",
-      "pk": 1,
-      "fields": {
-          "name": "Best Computers",
-          "website": "http://www.bestcomputers.com",
-          "contact_info": "Phone: 123-456-7890"
-      }
-  },
-  {
-      "model": "inventory.inventoryitem",
-      "pk": 1,
-      "fields": {
-          "pc_name": "Office Laptop 1",
-          "domain_user": "officeuser1",
-          "user": 1,
-          "notes": "",
-          "department": 1,
-          "device_type": "Laptop",
-          "costs": "600.00",
-          "new_computer": false,
-          "date_delivered": "2024-01-01T00:00:00Z",
-          "is_computer": true,
-          "has_dock": true,
-          "has_lcd": false,
-          "has_lcd2": false,
-          "has_stand": false,
-          "has_keyboard": true,
-          "has_cd": false,
-          "serial_number": "SN123456",
-          "model_number": "MN7891011",
-          "is_checked_out": false,
-          "last_checked_out_by": null,
-          "last_checked_out_at": null
-      }
-  },
-  {
-    "model": "auth.user",
-    "pk": 1,
-    "fields": {
-        "password": "pbkdf2_sha256$260000$someRandomString$hashedPasswordString==",
-        "last_login": null,
-        "is_superuser": true,
-        "username": "admin",
-        "first_name": "Admin",
-        "last_name": "User",
-        "email": "admin@example.com",
-        "is_staff": true,
-        "is_active": true,
-        "date_joined": "2024-01-01T00:00:00Z",
-        "groups": [],
-        "user_permissions": []
+    {
+        "model": "inventory.InventoryItem",
+        "pk": 1,
+        "fields": {
+            "barcode": "1234567890",
+            "pc_name": "PC Name 1",
+            "domain_user": "domain_user1",
+            "user": 1,
+            "notes": "Some notes here",
+            "department": null,
+            "device_type": "Laptop",
+            "costs": "0.0",
+            "new_computer": false,
+            "date_delivered": "2024-04-21T22:10:25Z",
+            "is_computer": false,
+            "has_dock": false,
+            "has_lcd": true,
+            "has_lcd2": false,
+            "has_stand": false,
+            "has_keyboard": true,
+            "has_cd": false,
+            "serial_number": "SN001",
+            "model_number": "MN001",
+            "is_checked_out": false,
+            "last_checked_out_by": null,
+            "last_checked_out_at": null,
+            "category": 1,
+            "supplier": null
+        }
+    },
+    {
+        "model": "inventory.InventoryItem",
+        "pk": 2,
+        "fields": {
+            "barcode": "1234567891",
+            "pc_name": "PC Name 2",
+            "domain_user": "domain_user2",
+            "user": 2,
+            "notes": "Additional notes",
+            "department": null,
+            "device_type": "Laptop",
+            "costs": "0.0",
+            "new_computer": true,
+            "date_delivered": "2024-04-21T22:10:25Z",
+            "is_computer": true,
+            "has_dock": true,
+            "has_lcd": false,
+            "has_lcd2": false,
+            "has_stand": true,
+            "has_keyboard": false,
+            "has_cd": true,
+            "serial_number": "SN002",
+            "model_number": "MN002",
+            "is_checked_out": false,
+            "last_checked_out_by": null,
+            "last_checked_out_at": null,
+            "category": 1,
+            "supplier": null
+        }
     }
-},
-
-  {
-      "model": "inventory.checkout",
-      "pk": 1,
-      "fields": {
-          "item": 1,
-          "user": 1,
-          "checked_out_at": "2024-04-01T12:00:00Z",
-          "checked_out_by": 1,
-          "checked_out_to": 1
-      }
-  }
 ]
