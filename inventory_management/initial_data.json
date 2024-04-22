@@ -58,5 +58,35 @@
             "category": 1,
             "supplier": null
         }
+    },
+    {
+        "model": "inventory.InventoryItem",
+        "pk": 3,
+        "fields": {
+            "barcode": "1234567891",
+            "pc_name": "PC Name 3",
+            "domain_user": "domain_user2",
+            "user": 2,
+            "notes": "Additional notes",
+            "department": null,
+            "device_type": "Laptop",
+            "costs": "0.0",
+            "new_computer": true,
+            "date_delivered": "2024-04-21T22:10:25Z",
+            "is_computer": true,
+            "has_dock": true,
+            "has_lcd": false,
+            "has_lcd2": false,
+            "has_stand": true,
+            "has_keyboard": false,
+            "has_cd": true,
+            "serial_number": "SN002",
+            "model_number": "MN002",
+            "is_checked_out": false,
+            "last_checked_out_by": null,
+            "last_checked_out_at": null,
+            "category": 1,
+            "supplier": null
+        }
     }
 ]

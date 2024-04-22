@@ -5,6 +5,7 @@
 {% block javascript %}
 <script src="{% static 'js/bootstrap.bundle.min.js' %}" ></script>
 <script src="{% static 'js/camera.js' %}"></script>
+<script src="{% static 'js/quagga.min.js' %}"></script>
 {% endblock javascript %}
 
 {% block content %}
@@ -14,14 +15,13 @@
         <h1>Inventory Item</h1>
     </div>
 
-    <!-- Barcode Scanner Section across the top -->
     <div class="row justify-content-center">
         <div class="col-12 text-center">
             <h2>Scan Barcode</h2>
             <button id="startScan" class="btn btn-info">Start Scanning</button>
             <button id="stopScan" class="btn btn-danger" style="display: none;">Stop Scanning</button>
             <!-- Container for the video feed -->
-            <div id="scanner-container" style="width: 100%; height: 10px;"></div>
+            <div id="scanner-container" style="width: 100%; width: 640; height: 280px;"></div>
         </div>
     </div>
 

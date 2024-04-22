@@ -11,15 +11,15 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
-class Location(models.Model):
-    location = models.CharField(max_length=200, blank=True, null=True)
+class Department(models.Model):
+    department = models.CharField(max_length=200, blank=True, null=True)
 
     class Meta:
-        verbose_name = 'location'
-        verbose_name_plural = 'locations'
+        verbose_name = 'department'
+        verbose_name_plural = 'departments'
 
     def __str__(self):
-        return self.location
+        return self.department
 
 class Supplier(models.Model):
     name = models.CharField(max_length=200)
@@ -35,7 +35,7 @@ class InventoryItem(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     notes = models.TextField(blank=True, default='')
     barcode = models.CharField(max_length=100, null=True, blank=True)
-    department = models.ForeignKey(Location, on_delete=models.SET_NULL, null=True, blank=True)
+    department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, blank=True)
     device_type = models.CharField(max_length=50, default='Laptop')
     category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True)
     costs = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)

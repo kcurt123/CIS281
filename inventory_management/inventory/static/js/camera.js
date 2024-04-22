@@ -1,16 +1,11 @@
-document.querySelector('#id_name').addEventListener('click', function(event) {
-  console.log('Container clicked', event);
-}, true); // Using capture phase for logging
-
 document.addEventListener('DOMContentLoaded', (event) => {
-   
+  console.log('domloaded');
   const startScanButton = document.getElementById('startScan');
   const stopScanButton = document.getElementById('stopScan');
   const scannerContainer = document.getElementById('scanner-container');
   const barcodeResult = document.getElementById('barcodeResult');
 
   startScanButton.addEventListener('click', startScanner);
-  console.log('start scan clicked');
   stopScanButton.addEventListener('click', stopScanner);
 
   function startScanner() {
