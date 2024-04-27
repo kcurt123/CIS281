@@ -133,3 +133,6 @@ LOGIN_REDIRECT_URL = '/dashboard'
 LOGIN_URL = 'login'
 
 LOW_QUANTITY = 3
+
+#STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+ALLOWED_HOSTS = ['stock4you.herokuapp.com', 'localhost', '127.0.0.1']
