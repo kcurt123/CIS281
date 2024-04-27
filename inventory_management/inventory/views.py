@@ -96,10 +96,22 @@ class AddItem(LoginRequiredMixin, CreateView):
 
 
 class EditItem(LoginRequiredMixin, UpdateView):
-	model = InventoryItem
-	form_class = InventoryItemForm
-	template_name = 'inventory/item_form.html'
-	success_url = reverse_lazy('dashboard')
+    model = InventoryItem
+    form_class = InventoryItemForm
+    template_name = 'inventory/item_form.html'
+    success_url = reverse_lazy('dashboard')
+
+    def get_object(self, queryset=None):
+        """
+        Override the get_object method to retrieve the item based on the URL parameter (pk).
+        """
+        pk = self.kwargs.get('pk')
+        return get_object_or_404(InventoryItem, pk=pk, user=self.request.user)
+
+    def form_valid(self, form):
+        # Update logic (optional)
+        # You can perform any additional actions before saving the form
+        return super().form_valid(form)
 
 class DeleteItem(LoginRequiredMixin, DeleteView):
 	model = InventoryItem
@@ -157,20 +169,22 @@ def checkout_item(request, item_id):
                 checkout.save()
                 
                 messages.success(request, 'Item successfully checked out.')
-                return redirect('dashboard')
+                return redirect('checked-out-items')  # Redirect to checked out items page
             else:
                 messages.error(request, 'This item is not available for checkout.')
-        return render(request, 'inventory/checkout_item.html', {'form': form, 'item': item})
+        return render(request, 'inventory/checked_out_items.html', {'form': form, 'item': item})
     else:
-        form = CheckoutForm(initial={'checked_out_to': request.user})
+        form = CheckoutForm(initial={'item': item, 'checked_out_by': request.user,})
     return render(request, 'inventory/checkout_item.html', {'form': form, 'item': item})
 
 def checked_out_items(request):
     search_query = request.GET.get('search', '')
     sort_order = request.GET.get('order', 'asc')
-    sort_by = request.GET.get('sort', 'checked_out_at')  # Default sort field updated
+    sort_by = request.GET.get('sort', 'checked_out_at')  # Default sort field
 
-    checkouts = Checkout.objects.all()
+    # Start with checkouts that have not been returned
+    checkouts = Checkout.objects.filter(returned=False)
+
     if search_query:
         checkouts = checkouts.filter(
             Q(item__pc_name__icontains=search_query) | 
@@ -189,6 +203,7 @@ def checked_out_items(request):
         'next_sort_order': 'desc' if sort_order == 'asc' else 'asc'
     })
 
+
 def return_item(request, item_id):
     item = get_object_or_404(InventoryItem, pk=item_id)
     if item.is_checked_out:
@@ -199,4 +214,10 @@ def return_item(request, item_id):
         messages.success(request, 'Item has been successfully returned.')
     else:
         messages.error(request, 'This item was not checked out.')
-    return redirect('checked-out-items')
+
+    # Use the HTTP referer to decide where to redirect
+    referer = request.META.get('HTTP_REFERER')
+    if referer:
+        return redirect(referer)
+    else:
+        return redirect('dashboard')

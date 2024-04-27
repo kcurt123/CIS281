@@ -2,12 +2,23 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<div class="container">
-    <h2>Checkout Item</h2>
-    <form method="post">
+{% if messages %}
+<div class="row mt-3">
+  {% for message in messages %}
+  <div class="col-md-10 col-12 mx-auto alert alert-{{ message.tags }}">
+    {{ message }}
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+<div class="row">
+    <div class="col-md-10 col-12 mx-auto mt-5">
+        <h2>Checkout Item</h2>
+        <form method="post" class="mb-3">
         {% csrf_token %}
-        {{ form.as_p }}
+        {{ form|crispy }}
         <button type="submit" class="btn btn-primary">Checkout</button>
-    </form>
+        </form>
+    </div>
 </div>
 {% endblock content %}

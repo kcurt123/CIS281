@@ -17,11 +17,19 @@ class InventoryItemForm(forms.ModelForm):
 
     class Meta:
         model = InventoryItem
-        fields = ['pc_name', 'domain_user', 'user', 'notes', 'department', 'device_type', 'costs', 'new_computer', 'date_delivered', 'is_computer', 'has_dock', 'has_lcd', 'has_lcd2', 'has_stand', 'has_keyboard', 'has_cd', 'serial_number', 'model_number', 'is_checked_out', 'last_checked_out_by', 'last_checked_out_at']
+        fields = [
+            'pc_name', 'domain_user', 'user', 'notes', 'department', 'device_type',
+            'costs', 'new_computer', 'date_delivered', 'is_computer', 'has_dock',
+            'has_lcd', 'has_lcd2', 'has_stand', 'has_keyboard', 'has_cd',
+            'serial_number', 'model_number', 'supplier',  # Add 'supplier' here
+            'is_checked_out', 'last_checked_out_by', 'last_checked_out_at'
+        ]
 
 class CheckoutForm(forms.ModelForm):
     checked_out_to = forms.ModelChoiceField(queryset=User.objects.all(), required=True)
-    
+
     class Meta:
         model = Checkout
-        fields = ['item', 'user', 'checked_out_by', 'checked_out_to']
+        fields = ['item', 'checked_out_by', 'checked_out_to']
+
+    
