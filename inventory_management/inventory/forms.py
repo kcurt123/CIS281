@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import Category, Department, Supplier, InventoryItem, Checkout
+from .models import Category, Department, Supplier, InventoryItem, Checkout, Person
 
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField()
@@ -26,10 +26,13 @@ class InventoryItemForm(forms.ModelForm):
         ]
 
 class CheckoutForm(forms.ModelForm):
-    checked_out_to = forms.ModelChoiceField(queryset=User.objects.all(), required=True)
+    checked_out_to = forms.ModelChoiceField(queryset=Person.objects.all(), required=True)
 
     class Meta:
         model = Checkout
         fields = ['item', 'checked_out_by', 'checked_out_to']
 
-    
+class PersonForm(forms.ModelForm):
+    class Meta:
+        model = Person
+        fields = ['first_name', 'last_name', 'other_identifier']   

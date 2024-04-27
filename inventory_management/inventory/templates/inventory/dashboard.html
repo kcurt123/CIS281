@@ -62,7 +62,13 @@
             </td>
             <td>
               {% if item.is_checked_out %}
-                Checked Out
+                {% with item.checkouts.last as checkout %}
+                  {% if checkout and checkout.checked_out_to %}
+                    Checked out to {{ checkout.checked_out_to.first_name }} {{ checkout.checked_out_to.last_name }}
+                  {% else %}
+                    Checked Out (Person Unknown)
+                  {% endif %}
+                {% endwith %}
               {% else %}
                 Available
               {% endif %}

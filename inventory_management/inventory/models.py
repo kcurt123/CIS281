@@ -21,6 +21,14 @@ class Department(models.Model):
     def __str__(self):
         return self.department
 
+class Person(models.Model):
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    other_identifier = models.CharField(max_length=100, blank=True, null=True)  # Optional, for additional identifying info
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
+
 class Supplier(models.Model):
     name = models.CharField(max_length=200)
     website = models.TextField(blank=True)
@@ -68,10 +76,11 @@ class Checkout(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='checkouts')
     checked_out_at = models.DateTimeField(auto_now_add=True)
     checked_out_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='checked_out_by_user')
-    checked_out_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='checked_out_to_user')
+    checked_out_to = models.ForeignKey(Person, on_delete=models.SET_NULL, null=True, related_name='checked_out_to')
     returned = models.BooleanField(default=False)
 
     def __str__(self):
-        user_name = self.user.username if self.user else "Unknown"
+        person_name = self.checked_out_to if self.checked_out_to else "Unknown"
         item_name = self.item.pc_name if self.item else "No Item"
-        return f"{item_name} checked out to {user_name}"
+        return f"{item_name} checked out to {person_name}"
+

@@ -35,7 +35,7 @@
             <tr>
                 <td>{{ checkout.item.pc_name }}</td>
                 <td>{{ checkout.checked_out_by.username }}</td>
-                <td>{{ checkout.checked_out_to.username }}</td>
+                <td>{{ checkout.checked_out_to.first_name }} {{ checkout.checked_out_to.last_name }}</td>
                 <td>{{ checkout.checked_out_at|date:"M d, Y H:i" }}</td>
                 <td>
                     <a href="{% url 'return_item' checkout.item.id %}" class="btn btn-info btn-sm">Return Item</a>

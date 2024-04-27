@@ -4,8 +4,8 @@ from django.views.generic import TemplateView, View, CreateView, UpdateView, Del
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required, permission_required
-from .forms import UserRegisterForm, InventoryItemForm, CheckoutForm
-from .models import InventoryItem, Category, Checkout
+from .forms import UserRegisterForm, InventoryItemForm, CheckoutForm, PersonForm
+from .models import InventoryItem, Category, Checkout, Person
 from inventory_management.settings import LOW_QUANTITY
 from django.db.models import Q
 from django.contrib import messages
@@ -151,7 +151,7 @@ def check_item_by_barcode(request):
 @login_required
 @permission_required('inventory.can_checkout_items', raise_exception=True)
 def checkout_item(request, item_id):
-    item = InventoryItem.objects.get(pk=item_id)
+    item = get_object_or_404(InventoryItem, pk=item_id)
     if request.method == 'POST':
         form = CheckoutForm(request.POST)
         if form.is_valid():
@@ -163,7 +163,8 @@ def checkout_item(request, item_id):
                 
                 checkout = form.save(commit=False)
                 checkout.item = item
-                checkout.checked_out_to = request.user
+                # Get Person from the form and set as checked out to
+                checkout.checked_out_to = form.cleaned_data['checked_out_to']  
                 checkout.checked_out_by = request.user
                 checkout.checked_out_at = timezone.now()
                 checkout.save()
@@ -172,10 +173,13 @@ def checkout_item(request, item_id):
                 return redirect('checked-out-items')  # Redirect to checked out items page
             else:
                 messages.error(request, 'This item is not available for checkout.')
-        return render(request, 'inventory/checked_out_items.html', {'form': form, 'item': item})
+        else:
+            return render(request, 'inventory/checkout_item.html', {'form': form, 'item': item})
     else:
-        form = CheckoutForm(initial={'item': item, 'checked_out_by': request.user,})
+        # Pass initial data for form fields
+        form = CheckoutForm(initial={'item': item,'checked_out_by': request.user})
     return render(request, 'inventory/checkout_item.html', {'form': form, 'item': item})
+
 
 def checked_out_items(request):
     search_query = request.GET.get('search', '')
@@ -187,9 +191,10 @@ def checked_out_items(request):
 
     if search_query:
         checkouts = checkouts.filter(
-            Q(item__pc_name__icontains=search_query) | 
-            Q(checked_out_by__username__icontains=search_query) |
-            Q(checked_out_to__username__icontains=search_query)
+            Q(item__pc_name__icontains=search_query) |
+            Q(checked_out_by__username__icontains=search_query) |  # Assuming checked_out_by is still a User
+            Q(checked_out_to__first_name__icontains=search_query) |  # Search by Person's first name
+            Q(checked_out_to__last_name__icontains=search_query)  # Search by Person's last name
         )
 
     if sort_order == 'desc':
