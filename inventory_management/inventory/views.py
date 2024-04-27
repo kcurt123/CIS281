@@ -22,7 +22,7 @@ class Index(TemplateView):
 class Dashboard(LoginRequiredMixin, View):
     def get(self, request):
         sort_order = request.GET.get('order', 'asc')
-        sort_by = request.GET.get('sort', 'pc_name')  # Default sort field updated to 'pc_name'
+        sort_by = request.GET.get('sort', 'pc_name') 
         search_query = request.GET.get('search', '')
 
         items = InventoryItem.objects.filter(user=request.user)
@@ -109,8 +109,6 @@ class EditItem(LoginRequiredMixin, UpdateView):
         return get_object_or_404(InventoryItem, pk=pk, user=self.request.user)
 
     def form_valid(self, form):
-        # Update logic (optional)
-        # You can perform any additional actions before saving the form
         return super().form_valid(form)
 
 class DeleteItem(LoginRequiredMixin, DeleteView):
@@ -119,17 +117,14 @@ class DeleteItem(LoginRequiredMixin, DeleteView):
 	success_url = reverse_lazy('dashboard')
 	context_object_name = 'item'
 
-@csrf_exempt  # Temporarily disable CSRF for this view for demonstration purposes.
+@csrf_exempt  
 def update_inventory(request):
     if request.method == 'POST':
         try:
-            data = json.loads(request.body.decode('utf-8'))  # Decode and load the JSON data
+            data = json.loads(request.body.decode('utf-8')) 
             barcode = data.get('barcode')
 
-            # Here add logic to handle the barcode,
-            # such as looking up the InventoryItem, updating quantities, etc.
-
-            # For demonstration, let's just return the barcode in the response
+            
             return JsonResponse({'status': 'success', 'barcode': barcode})
         except json.JSONDecodeError:
             return HttpResponseBadRequest("Invalid JSON")
@@ -142,7 +137,6 @@ def check_item_by_barcode(request):
         barcode = data.get('barcode', '')
         try:
             item = InventoryItem.objects.get(barcode=barcode)
-            # Assuming category is a ForeignKey in InventoryItem
             return JsonResponse({'exists': True, 'item': {'name': item.name, 'quantity': item.quantity + 1, 'category_id': item.category.id if item.category else None}})
         except InventoryItem.DoesNotExist:
             return JsonResponse({'exists': False})
@@ -155,7 +149,7 @@ def checkout_item(request, item_id):
     if request.method == 'POST':
         form = CheckoutForm(request.POST)
         if form.is_valid():
-            if not item.is_checked_out:  # Check if the item is not already checked out
+            if not item.is_checked_out:  
                 item.is_checked_out = True
                 item.last_checked_out_by = request.user
                 item.last_checked_out_at = timezone.now()
@@ -163,20 +157,18 @@ def checkout_item(request, item_id):
                 
                 checkout = form.save(commit=False)
                 checkout.item = item
-                # Get Person from the form and set as checked out to
                 checkout.checked_out_to = form.cleaned_data['checked_out_to']  
                 checkout.checked_out_by = request.user
                 checkout.checked_out_at = timezone.now()
                 checkout.save()
                 
                 messages.success(request, 'Item successfully checked out.')
-                return redirect('checked-out-items')  # Redirect to checked out items page
+                return redirect('checked-out-items')  
             else:
                 messages.error(request, 'This item is not available for checkout.')
         else:
             return render(request, 'inventory/checkout_item.html', {'form': form, 'item': item})
     else:
-        # Pass initial data for form fields
         form = CheckoutForm(initial={'item': item,'checked_out_by': request.user})
     return render(request, 'inventory/checkout_item.html', {'form': form, 'item': item})
 
@@ -184,17 +176,16 @@ def checkout_item(request, item_id):
 def checked_out_items(request):
     search_query = request.GET.get('search', '')
     sort_order = request.GET.get('order', 'asc')
-    sort_by = request.GET.get('sort', 'checked_out_at')  # Default sort field
+    sort_by = request.GET.get('sort', 'checked_out_at')  
 
-    # Start with checkouts that have not been returned
     checkouts = Checkout.objects.filter(returned=False)
 
     if search_query:
         checkouts = checkouts.filter(
             Q(item__pc_name__icontains=search_query) |
-            Q(checked_out_by__username__icontains=search_query) |  # Assuming checked_out_by is still a User
-            Q(checked_out_to__first_name__icontains=search_query) |  # Search by Person's first name
-            Q(checked_out_to__last_name__icontains=search_query)  # Search by Person's last name
+            Q(checked_out_by__username__icontains=search_query) |  
+            Q(checked_out_to__first_name__icontains=search_query) |  
+            Q(checked_out_to__last_name__icontains=search_query) 
         )
 
     if sort_order == 'desc':
@@ -214,13 +205,12 @@ def return_item(request, item_id):
     if item.is_checked_out:
         item.is_checked_out = False
         item.save()
-        # Assuming you also want to record who and when an item was returned
         Checkout.objects.filter(item=item, returned=False).update(returned=True)
         messages.success(request, 'Item has been successfully returned.')
     else:
         messages.error(request, 'This item was not checked out.')
 
-    # Use the HTTP referer to decide where to redirect
+    
     referer = request.META.get('HTTP_REFERER')
     if referer:
         return redirect(referer)

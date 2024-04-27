@@ -24,7 +24,7 @@ class Department(models.Model):
 class Person(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
-    other_identifier = models.CharField(max_length=100, blank=True, null=True)  # Optional, for additional identifying info
+    other_identifier = models.CharField(max_length=100, blank=True, null=True)  
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
@@ -49,7 +49,7 @@ class InventoryItem(models.Model):
     costs = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
     new_computer = models.BooleanField(default=False)
     date_delivered = models.DateTimeField(blank=True, null=True, default=timezone.now)
-    is_computer = models.BooleanField(default=False)  # True for computer, False for laptop
+    is_computer = models.BooleanField(default=False)  
     has_dock = models.BooleanField(default=False)
     has_lcd = models.BooleanField(default=False)
     has_lcd2 = models.BooleanField(default=False)

@@ -21,7 +21,7 @@ class InventoryItemForm(forms.ModelForm):
             'pc_name', 'domain_user', 'user', 'notes', 'department', 'device_type',
             'costs', 'new_computer', 'date_delivered', 'is_computer', 'has_dock',
             'has_lcd', 'has_lcd2', 'has_stand', 'has_keyboard', 'has_cd',
-            'serial_number', 'model_number', 'supplier',  # Add 'supplier' here
+            'serial_number', 'model_number', 'supplier', 
             'is_checked_out', 'last_checked_out_by', 'last_checked_out_at'
         ]
 
