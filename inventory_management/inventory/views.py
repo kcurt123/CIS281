@@ -89,9 +89,8 @@ class AddItem(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
-        # Capture barcode data from the POST request and save it
-        barcode = self.request.POST.get('barcode', '')  # Assuming barcode data is sent in POST request
-        form.instance.barcode = barcode  # Assuming you have a 'barcode' field in your model
+        barcode = self.request.POST.get('barcode', '')  
+        form.instance.barcode = barcode 
         return super().form_valid(form)
 
 
@@ -206,7 +205,7 @@ def return_item(request, item_id):
         item.is_checked_out = False
         item.save()
         Checkout.objects.filter(item=item, returned=False).update(returned=True)
-        messages.success(request, 'Item has been successfully returned.')
+        messages.success(request, f'{item.pc_name} has been successfully returned.')
     else:
         messages.error(request, 'This item was not checked out.')
 

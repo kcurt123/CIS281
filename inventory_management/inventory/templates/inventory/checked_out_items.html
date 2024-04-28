@@ -2,10 +2,10 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<div class="container mt-4">
+<div class="container-fluid mt-3">
     <h2>Checked Out Items</h2>
     {% if messages %}
-    <div class="row mt-3">
+    <div class="row mt-5">
         {% for message in messages %}
         <div class="col-md-10 col-12 mx-auto alert alert-{{ message.tags }}">
             {{ message }}
@@ -13,6 +13,7 @@
         {% endfor %}
     </div>
     {% endif %}
+    
     {% if checkouts.exists %}
     <div class="d-flex justify-content-end mb-3">
         <form method="GET" action="{% url 'checked-out-items' %}" class="me-2">
@@ -23,7 +24,7 @@
     <table class="table table-hover table-striped">
         <thead>
             <tr>
-                <th><a href="?sort=pc_name&order={{ next_sort_order }}">PC Name</a></th>
+                <th scope="col"><a href="?sort=pc_name&order={{ next_sort_order }}">PC Name</a></th>
                 <th><a href="?sort=checked_out_by&order={{ next_sort_order }}">Checked Out By</a></th>
                 <th><a href="?sort=checked_out_to&order={{ next_sort_order }}">Checked Out To</a></th>
                 <th><a href="?sort=checked_out_at&order={{ next_sort_order }}">Checked Out At</a></th>
@@ -32,7 +33,7 @@
         </thead>
         <tbody>
             {% for checkout in checkouts %}
-            <tr>
+            <tr class="table-light">
                 <td>{{ checkout.item.pc_name }}</td>
                 <td>{{ checkout.checked_out_by.username }}</td>
                 <td>{{ checkout.checked_out_to.first_name }} {{ checkout.checked_out_to.last_name }}</td>

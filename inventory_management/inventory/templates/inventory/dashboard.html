@@ -1,93 +1,126 @@
 {% extends 'inventory/base.html' %}
+{% load crispy_forms_tags %}
+
 {% block content %}
-{% if messages %}
-<div class="row mt-3">
-  {% for message in messages %}
-  <div class="col-md-10 col-12 mx-auto alert alert-{{ message.tags }}">
-    {{ message }}
-  </div>
-  {% endfor %}
-</div>
-{% endif %}
-<div class="row">
-  <div class="col-md-10 col-12 mx-auto mt-5">
-    <div class="d-flex justify-content-end mb-3">
-      <form method="GET" action="{% url 'dashboard' %}" class="me-2">
-        <input type="text" name="search" placeholder="Search items..." value="{{ search_query }}">
-        <button type="submit" class="btn btn-secondary">Search</button>
-      </form>
-      <a href="{% url 'add-item' %}" class="btn btn-primary">+</a>
+<div class="container-fluid mt-3 w-10">
+  <h2>Dashboard</h2>
+  {% if messages %}
+    <div class="row mt-5">
+      {% for message in messages %}
+      <div class="col-md-10 col-12 mx-auto alert alert-{{ message.tags }}">
+        {{ message }}
+      </div>
+      {% endfor %}
     </div>
-    <table class="table table-hover table-striped">
-      <thead>
-        <tr>
-          <th scope="col"><a href="?sort=id&order={{ next_sort_order }}">ID</a></th>
-          <th scope="col"><a href="?sort=pc_name&order={{ next_sort_order }}">PC Name</a></th>
-          <th scope="col"><a href="?sort=department&order={{ next_sort_order }}">Department</a></th>
-          <th scope="col"><a href="?sort=model_number&order={{ next_sort_order }}">Model Number</a></th>
-          <th scope="col"><a href="?sort=serial_number&order={{ next_sort_order }}">Serial Number</a></th>
-          <th scope="col"><a href="?sort=notes&order={{ next_sort_order }}">Notes</a></th>
-          <th scope="col"><a href="{% url 'dashboard' %}?sort=supplier&order={{ next_sort_order }}">Supplier</a></th>
-          <th scope="col"><a href="{% url 'dashboard' %}?sort=is_checked_out&order={{ next_sort_order }}">Status</a></th>
-          <th scope="col">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for item in items %}
-          <tr class="table-warning" {% if item.is_checked_out %} table-light {% endif %}>
-            <th scope="row">{{ item.id }}</th>
-            <td>{{ item.pc_name }}</td>
-            <td>
-              {% if item.department %}
-                {{ item.department.department }}
-              {% else %}
-                None
-              {% endif %}
-            </td>
-            <td>{{ item.model_number }}</td>
-            <td>{{ item.serial_number }}</td>
-            <td>
-              {% if item.notes %}
-                {{ item.notes }}
-              {% else %}
-                None
-              {% endif %}
-            </td>
-            <td>
-              {% if item.supplier %}
-                {{ item.supplier.name }}
-              {% else %}
-                No Supplier
-              {% endif %}
-            </td>
-            <td>
-              {% if item.is_checked_out %}
-                {% with item.checkouts.last as checkout %}
-                  {% if checkout and checkout.checked_out_to %}
-                    Checked out to {{ checkout.checked_out_to.first_name }} {{ checkout.checked_out_to.last_name }}
-                  {% else %}
-                    Checked Out (Person Unknown)
-                  {% endif %}
-                {% endwith %}
-              {% else %}
-                Available
-              {% endif %}
-            </td>
-            <td>
-              <a href="{% url 'edit-item' item.id %}" class="btn btn-outline-secondary btn-sm">Edit</a>
-              <a href="{% url 'delete-item' item.id %}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
-              {% if not item.is_checked_out %}
-              <a href="{% url 'checkout_item' item.id %}" class="btn btn-info btn-sm">Check Out</a>
-              {% else %}
-              <a href="{% url 'return_item' item.id %}" class="btn btn-success btn-sm">Return</a>
-              {% endif %}
-            </td>
+  {% endif %}
+
+  
+      <div class="d-flex justify-content-end mb-3">
+        <form method="GET" action="{% url 'dashboard' %}" class="me-2">
+          <input type="text" name="search" placeholder="Search items..." value="{{ search_query }}">
+          <button type="submit" class="btn btn-secondary">Search</button>
+        </form>
+        <a href="{% url 'add-item' %}" class="btn btn-primary">+</a>
+      </div>
+
+      <!-- Modal for displaying item details -->
+      <div class="modal fade" id="itemDetailsModal" tabindex="-1" aria-labelledby="itemDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="itemDetailsModalLabel">Item Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Details will be dynamically filled here based on the clicked row -->
+                </div>
+            </div>
+        </div>
+      </div>
+
+      <table class="table table-hover table-striped">
+        <thead>
+          <tr>
+            <th scope="col"><a href="?sort=id&order={{ next_sort_order }}">ID</a></th>
+            <th scope="col"><a href="?sort=pc_name&order={{ next_sort_order }}">PC Name</a></th>
+            <th scope="col"><a href="?sort=department&order={{ next_sort_order }}">Department</a></th>
+            <th scope="col"><a href="?sort=model_number&order={{ next_sort_order }}">Model Number</a></th>
+            <th scope="col"><a href="?sort=serial_number&order={{ next_sort_order }}">Serial Number</a></th>
+            <th scope="col"><a href="?sort=notes&order={{ next_sort_order }}">Notes</a></th>
+            <th scope="col"><a href="{% url 'dashboard' %}?sort=supplier&order={{ next_sort_order }}">Supplier</a></th>
+            <th scope="col"><a href="{% url 'dashboard' %}?sort=is_checked_out&order={{ next_sort_order }}">Status</a></th>
+            <th scope="col">Actions</th>
           </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-</div>
+        </thead>
+        <tbody>
+          {% for item in items %}
+          <tr class="table-light" data-bs-toggle="tooltip" title="More Details" data-bs-placement="top"
+              data-domain_user="{{ item.domain_user }}"
+              data-device_type="{{ item.device_type }}"
+              data-costs="{{ item.costs }}"
+              data-date_delivered="{{ item.date_delivered }}"
+              data-is_computer="{{ item.is_computer }}"
+              data-new_computer="{{ item.new_computer }}"
+              data-has_dock="{{ item.has_dock }}"
+              data-has_lcd="{{ item.has_lcd }}"
+              data-has_lcd2="{{ item.has_lcd2 }}"
+              data-has_stand="{{ item.has_stand }}"
+              data-has_keyboard="{{ item.has_keyboard }}"
+              data-has_cd="{{ item.has_cd }}"
+              data-last_checked_out_at="{{ item.last_checked_out_at|date:'Y-m-d g:i A' }}"
+              {% if item.is_checked_out %} table-light {% endif %}>
+              <th scope="row">{{ item.id }}</th>
+              <td>{{ item.pc_name }}</td>
+              <td>
+                {% if item.department %}
+                  {{ item.department.department }}
+                {% else %}
+                  None
+                {% endif %}
+              </td>
+              <td>{{ item.model_number }}</td>
+              <td>{{ item.serial_number }}</td>
+              <td>
+                {% if item.notes %}
+                  {{ item.notes }}
+                {% else %}
+                  None
+                {% endif %}
+              </td>
+              <td>
+                {% if item.supplier %}
+                  {{ item.supplier.name }}
+                {% else %}
+                  No Supplier
+                {% endif %}
+              </td>
+              <td>
+                {% if item.is_checked_out %}
+                  {% with item.checkouts.last as checkout %}
+                    {% if checkout and checkout.checked_out_to %}
+                      Checked out to {{ checkout.checked_out_to.first_name }} {{ checkout.checked_out_to.last_name }}
+                    {% else %}
+                      Checked Out (Person Unknown)
+                    {% endif %}
+                  {% endwith %}
+                {% else %}
+                  Available
+                {% endif %}
+              </td>
+              <td>
+                <a href="{% url 'edit-item' item.id %}" class="btn btn-outline-secondary btn-sm">Edit</a>
+                <a href="{% url 'delete-item' item.id %}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
+                {% if not item.is_checked_out %}
+                <a href="{% url 'checkout_item' item.id %}" class="btn btn-info btn-sm">Check Out</a>
+                {% else %}
+                <a href="{% url 'return_item' item.id %}" class="btn btn-success btn-sm">Return</a>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
 
 {% endblock content %}
 

@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 class Category(models.Model):
     name = models.CharField(max_length=200)
@@ -75,7 +77,7 @@ class Checkout(models.Model):
     item = models.ForeignKey(InventoryItem, on_delete=models.CASCADE, related_name='checkouts')
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='checkouts')
     checked_out_at = models.DateTimeField(auto_now_add=True)
-    checked_out_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='checked_out_by_user')
+    checked_out_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='checked_out_by')
     checked_out_to = models.ForeignKey(Person, on_delete=models.SET_NULL, null=True, related_name='checked_out_to')
     returned = models.BooleanField(default=False)
 
@@ -84,3 +86,10 @@ class Checkout(models.Model):
         item_name = self.item.pc_name if self.item else "No Item"
         return f"{item_name} checked out to {person_name}"
 
+@receiver(post_save, sender=Checkout)
+def update_last_checked_out_details(sender, instance, created, **kwargs):
+    if created:  # This ensures the action happens only on creation of a new Checkout
+        item = instance.item
+        item.last_checked_out_at = instance.checked_out_at
+        item.last_checked_out_by = instance.checked_out_by
+        item.save()
