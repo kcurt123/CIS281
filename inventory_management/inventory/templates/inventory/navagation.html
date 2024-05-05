@@ -25,6 +25,9 @@
                         <a class="nav-link" href="#">{{ user.username }}</a>
                     </li>
                     <li class="nav-item me-3">
+                        <a href="{{ request.path }}?print=true" class="btn btn-primary nav-link">Print Mode</a>
+                    </li>
+                    <li class="nav-item me-3">
                         <form action="{% url 'logout' %}" method="post" style="display: inline;">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-primary nav-link" style="border: none; background: 0056b3; padding: 0.5rem 1rem;">Sign Out</button>
@@ -41,5 +44,4 @@
             </ul>
         </div>
     </div>
-</nav>
-
+</nav

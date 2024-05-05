@@ -1,0 +1,36 @@
+{% extends 'inventory/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <h2>Inventory Dashboard - Print View</h2>
+    <table class="table table-hover table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>PC Name</th>
+                <th>Department</th>
+                <th>Model Number</th>
+                <th>Serial Number</th>
+                <th>Notes</th>
+                <th>Supplier</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.id }}</td>
+                <td>{{ item.pc_name }}</td>
+                <td>{{ item.department }}</td>
+                <td>{{ item.model_number }}</td>
+                <td>{{ item.serial_number }}</td>
+                <td>{{ item.notes }}</td>
+                <td>{{ item.supplier.name }}</td>
+                <td>{{ item.is_checked_out|yesno:"Checked Out,Available" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

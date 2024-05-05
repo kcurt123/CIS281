@@ -24,16 +24,17 @@ class Dashboard(LoginRequiredMixin, View):
         sort_order = request.GET.get('order', 'asc')
         sort_by = request.GET.get('sort', 'pc_name') 
         search_query = request.GET.get('search', '')
+        print_mode = 'print' in request.GET
 
         items = InventoryItem.objects.filter(user=request.user)
 
-        if search_query:
+        if search_query and not print_mode:
             query = (
                 Q(pc_name__icontains=search_query) | \
                 Q(barcode__icontains=search_query) | \
                 Q(category__name__icontains=search_query) | \
                 Q(supplier__name__icontains=search_query) | \
-                Q(location_name_icontains=search_query) | \
+                Q(location_name__icontains=search_query) | \
                 Q(department__location__icontains=search_query) | \
                 Q(notes__icontains=search_query)
             )
@@ -41,9 +42,16 @@ class Dashboard(LoginRequiredMixin, View):
 
         if sort_order == 'desc':
             sort_by = f'-{sort_by}'
-        
+
         items = items.order_by(sort_by)
-        
+
+        if print_mode:
+            # Optionally use a different template that's optimized for printing
+            return render(request, 'inventory/dashboard_print.html', {
+                'items': items,
+                'print_mode': True  # This could be used to adjust the template logic
+            })
+
         return render(request, 'inventory/dashboard.html', {
             'items': items,
             'search_query': search_query,
@@ -175,7 +183,8 @@ def checkout_item(request, item_id):
 def checked_out_items(request):
     search_query = request.GET.get('search', '')
     sort_order = request.GET.get('order', 'asc')
-    sort_by = request.GET.get('sort', 'checked_out_at')  
+    sort_by = request.GET.get('sort', 'checked_out_at')
+    print_mode = 'print' in request.GET  # Check for print mode
 
     checkouts = Checkout.objects.filter(returned=False)
 
@@ -184,13 +193,19 @@ def checked_out_items(request):
             Q(item__pc_name__icontains=search_query) |
             Q(checked_out_by__username__icontains=search_query) |  
             Q(checked_out_to__first_name__icontains=search_query) |  
-            Q(checked_out_to__last_name__icontains=search_query) 
+            Q(checked_out_to__last_name__icontains=search_query)
         )
 
-    if sort_order == 'desc':
+    if not print_mode and sort_order == 'desc':  
         sort_by = f'-{sort_by}'
-
     checkouts = checkouts.order_by(sort_by)
+
+    if print_mode:
+        return render(request, 'inventory/checked_out_items_print.html', {
+            'checkouts': checkouts,
+            'search_query': search_query,
+            'print_mode': True
+        })
 
     return render(request, 'inventory/checked_out_items.html', {
         'checkouts': checkouts,

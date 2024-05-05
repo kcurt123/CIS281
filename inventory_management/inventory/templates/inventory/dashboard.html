@@ -41,7 +41,7 @@
       <table class="table table-hover table-striped">
         <thead>
           <tr>
-            <th scope="col"><a href="?sort=id&order={{ next_sort_order }}">ID</a></th>
+            <!--<th scope="col"><a href="?sort=id&order={{ next_sort_order }}">ID</a></th> -->
             <th scope="col"><a href="?sort=pc_name&order={{ next_sort_order }}">PC Name</a></th>
             <th scope="col"><a href="?sort=department&order={{ next_sort_order }}">Department</a></th>
             <th scope="col"><a href="?sort=model_number&order={{ next_sort_order }}">Model Number</a></th>
@@ -69,7 +69,7 @@
               data-has_cd="{{ item.has_cd }}"
               data-last_checked_out_at="{{ item.last_checked_out_at|date:'Y-m-d g:i A' }}"
               {% if item.is_checked_out %} table-light {% endif %}>
-              <th scope="row">{{ item.id }}</th>
+              <!--<th scope="row">{{ item.id }}</th>-->
               <td>{{ item.pc_name }}</td>
               <td>
                 {% if item.department %}
@@ -121,6 +121,4 @@
         </tbody>
       </table>
     </div>
-
 {% endblock content %}
-

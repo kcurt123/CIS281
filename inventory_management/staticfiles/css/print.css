@@ -1,0 +1,18 @@
+@media print {
+    body, html {
+        width: 100%;
+    }
+
+    .navbar, .modal, .footer, form, .btn, .alert, .d-flex {
+        display: none !important;
+    }
+
+    table {
+        width: 100%;
+        font-size: 12px;
+    }
+
+    th, td {
+        page-break-inside: avoid;
+    }
+}
