@@ -24,9 +24,11 @@
                     <li class="nav-item me-3">
                         <a class="nav-link" href="#">{{ user.username }}</a>
                     </li>
+                    {% if show_print_button %}
                     <li class="nav-item me-3">
-                        <a href="{{ request.path }}?print=true" class="btn btn-primary nav-link">Print Mode</a>
+                        <a href="{{ request.path }}?print=true" class="btn btn-primary nav-link">Print View</a>
                     </li>
+                    {% endif %}
                     <li class="nav-item me-3">
                         <form action="{% url 'logout' %}" method="post" style="display: inline;">
                             {% csrf_token %}
@@ -44,4 +46,4 @@
             </ul>
         </div>
     </div>
-</nav
+</nav>

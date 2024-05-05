@@ -55,7 +55,8 @@ class Dashboard(LoginRequiredMixin, View):
         return render(request, 'inventory/dashboard.html', {
             'items': items,
             'search_query': search_query,
-            'next_sort_order': 'desc' if sort_order == 'asc' else 'asc'
+            'next_sort_order': 'desc' if sort_order == 'asc' else 'asc',
+            'show_print_button': True
         })
 
 
@@ -210,7 +211,8 @@ def checked_out_items(request):
     return render(request, 'inventory/checked_out_items.html', {
         'checkouts': checkouts,
         'search_query': search_query,
-        'next_sort_order': 'desc' if sort_order == 'asc' else 'asc'
+        'next_sort_order': 'desc' if sort_order == 'asc' else 'asc',
+        'show_print_button': True
     })
 
 
