@@ -41,93 +41,135 @@
       <table class="table table-hover table-striped">
         <thead>
           <tr>
-            <!--<th scope="col"><a href="?sort=id&order={{ next_sort_order }}">ID</a></th> -->
+            
             <th scope="col"><a href="?sort=pc_name&order={{ next_sort_order }}">PC Name</a></th>
             <th scope="col"><a href="?sort=domain_user&order={{ next_sort_order }}">Domain User</a></th>
+            <th scope="col"><a href="?sort=person_name&order={{ next_sort_order }}">Person</a></th>
             <th scope="col"><a href="?sort=department&order={{ next_sort_order }}">Department</a></th>
-            <th scope="col"><a href="?sort=model_number&order={{ next_sort_order }}">Model Number</a></th>
-            <th scope="col"><a href="?sort=serial_number&order={{ next_sort_order }}">Serial Number</a></th>
+            <th scope="col"><a href="?sort=device_type&order={{ next_sort_order }}">Device Type</a></th>
+            <th scope="col"><a href="?sort=costs&order={{ next_sort_order }}">Cost</a></th>
+            <th scope="col"><a href="?sort=new_computer&order={{ next_sort_order }}">New Computer</a></th>
+            <th scope="col"><a href="?sort=date_delivered&order={{ next_sort_order }}">Date Delivered</a></th>
+            <th scope="col"><a href="?sort=is_computer&order={{ next_sort_order }}">Computer/Laptop</a></th>
+            <th scope="col"><a href="?sort=has_dock&order={{ next_sort_order }}">Dock</a></th>
+            <th scope="col"><a href="?sort=has_lcd&order={{ next_sort_order }}">LCD</a></th>
+            <th scope="col"><a href="?sort=has_lcd2&order={{ next_sort_order }}">LCD2</a></th>
+            <th scope="col"><a href="?sort=has_stand&order={{ next_sort_order }}">Stand</a></th>
+            <th scope="col"><a href="?sort=has_keyboard&order={{ next_sort_order }}">Keyboard</a></th>
+            <th scope="col"><a href="?sort=has_cd&order={{ next_sort_order }}">CD</a></th>
+            <th scope="col"><a href="?sort=supplier&order={{ next_sort_order }}">Supplier</a></th>
             <th scope="col"><a href="?sort=notes&order={{ next_sort_order }}">Notes</a></th>
-            <th scope="col"><a href="{% url 'dashboard' %}?sort=supplier&order={{ next_sort_order }}">Supplier</a></th>
-            <th scope="col"><a href="{% url 'dashboard' %}?sort=is_checked_out&order={{ next_sort_order }}">Status</a></th>
+            <th scope="col"><a href="?sort=is_checked_out&order={{ next_sort_order }}">Status</a></th>
             <th scope="col">Actions</th>
           </tr>
         </thead>
+        
         <tbody>
           {% for item in items %}
           <tr class="table-light" data-bs-toggle="tooltip" title="More Details" data-bs-placement="top"
-              data-domain_user="{{ item.domain_user }}"
+              
+              data-pc_name="{{ item.pc_name }}"
+              data-domain_user="{% with item.checkouts.last as last_checkout %}{% if last_checkout and last_checkout.checked_out_to and not last_checkout.returned %}{{ last_checkout.checked_out_to.domain_user }}{% endif %}{% endwith %}"
+              data-person="{% if item.is_checked_out %}{% with item.checkouts.last as checkout %}{% if checkout and not checkout.returned %}{{ checkout.checked_out_to.first_name }} {{ checkout.checked_out_to.last_name }}{% endif %}{% endwith %}{% else %}N/A{% endif %}"
+              data-department="{% with item.checkouts.last as last_checkout %}{% if last_checkout and last_checkout.checked_out_to and not last_checkout.returned %}{{ last_checkout.checked_out_to.department }}{% else %}N/A{% endif %}{% endwith %}"
               data-device_type="{{ item.device_type }}"
               data-costs="{{ item.costs }}"
               data-date_delivered="{{ item.date_delivered }}"
-              data-is_computer="{{ item.is_computer }}"
-              data-new_computer="{{ item.new_computer }}"
-              data-has_dock="{{ item.has_dock }}"
-              data-has_lcd="{{ item.has_lcd }}"
-              data-has_lcd2="{{ item.has_lcd2 }}"
-              data-has_stand="{{ item.has_stand }}"
-              data-has_keyboard="{{ item.has_keyboard }}"
-              data-has_cd="{{ item.has_cd }}"
+              data-is_computer="{{ item.is_computer|yesno:'Yes,No' }}"
+              data-new_computer="{{ item.new_computer|yesno:'Yes,No' }}"
+              data-has_dock="{{ item.has_dock|yesno:'Yes,No' }}"
+              data-has_lcd="{{ item.has_lcd|yesno:'Yes,No' }}"
+              data-has_lcd2="{{ item.has_lcd2|yesno:'Yes,No' }}"
+              data-has_stand="{{ item.has_stand|yesno:'Yes,No' }}"
+              data-has_keyboard="{{ item.has_keyboard|yesno:'Yes,No' }}"
+              data-has_cd="{{ item.has_cd|yesno:'Yes,No' }}"
               data-last_checked_out_at="{{ item.last_checked_out_at|date:'Y-m-d g:i A' }}"
-              
-              {% if item.is_checked_out %} table-light {% endif %}>
-              
-              <!--<th scope="row">{{ item.id }}</th>-->
+              data-model_number="{{ item.model_number }}"
+              data-serial_number="{{ item.serial_number }}"
+              data-supplier="{% if item.supplier %}{{ item.supplier.name }}{% else %}No Supplier{% endif %}"
+              data-notes="{% if item.notes %}{{ item.notes }}{% else %}N/A{% endif %}">
+    
               <td>{{ item.pc_name }}</td>
               <td>
-                {% with item.checkouts.last as last_checkout %}
-                  {% if last_checkout and last_checkout.checked_out_to %}
-                      {{ last_checkout.checked_out_to.domain_user }}
-                  {% else %}
-                      N/A
-                  {% endif %}
-                {% endwith %}
-              </td> 
-              <td>
-                  {% if item.department %}
-                      {{ item.department.department }}
-                  {% else %}
-                      None
-                  {% endif %}
-              </td>
-              <td>{{ item.model_number }}</td>
-              <td>{{ item.serial_number }}</td>
-              <td>
-                  {% if item.notes %}
-                      {{ item.notes }}
-                  {% else %}
-                      None
-                  {% endif %}
+                  {% with item.checkouts.last as last_checkout %}
+                      {% if last_checkout and last_checkout.checked_out_to and not last_checkout.returned %}
+                          {{ last_checkout.checked_out_to.domain_user }}
+                      {% else %}
+                          N/A
+                      {% endif %}
+                  {% endwith %}
               </td>
               <td>
-                  {% if item.supplier %}
-                      {{ item.supplier.name }}
-                  {% else %}
-                      No Supplier
-                  {% endif %}
-              </td>
-              <td>
-                  {% if item.is_checked_out %}
+                {% if item.is_checked_out %}
                       {% with item.checkouts.last as checkout %}
-                          {% if checkout and checkout.checked_out_to %}
-                              Checked out to {{ checkout.checked_out_to.first_name }} {{ checkout.checked_out_to.last_name }}
+                          {% if checkout and not checkout.returned %}
+                            {{ checkout.checked_out_to.first_name }} {{ checkout.checked_out_to.last_name }}
                           {% else %}
-                              Checked Out (Person Unknown)
+                              N/A
                           {% endif %}
                       {% endwith %}
                   {% else %}
-                      Available
+                      N/A
+                  {% endif %}
+              </td> 
+              <td>
+                  {% with item.checkouts.last as last_checkout %}
+                      {% if last_checkout and last_checkout.checked_out_to and not last_checkout.returned %}
+                          {{ last_checkout.checked_out_to.department }}
+                      {% else %}
+                          N/A
+                      {% endif %}
+                  {% endwith %}
+              </td>
+              <td>
+                  {% if item.device_type %}
+                    {{ item.device_type }}
+                  {% else %}
+                    N/A
+                  {% endif %}
+              </td>
+              <td>${{ item.costs }}</td>
+              <td>{{ item.new_computer|yesno:"Yes,No" }}</td>
+              <td>{{ item.date_delivered }}</td>
+              <td>{{ item.is_computer|yesno:"Yes,No" }}</td>
+              <td>{{ item.has_dock|yesno:"Yes,No" }}</td>
+              <td>{{ item.has_lcd|yesno:"Yes,No" }}</td>
+              <td>{{ item.has_lcd2|yesno:"Yes,No" }}</td>
+              <td>{{ item.has_stand|yesno:"Yes,No" }}</td>
+              <td>{{ item.has_keyboard|yesno:"Yes,No" }}</td>
+              <td>{{ item.has_cd|yesno:"Yes,No" }}</td>
+
+              
+              <td>
+                  {% if item.supplier %}
+                    {{ item.supplier.name }}
+                  {% else %}
+                    N/A
                   {% endif %}
               </td>
               <td>
-                <a href="{% url 'edit-item' item.id %}" class="btn btn-outline-secondary btn-sm">Edit</a>
-                <a href="{% url 'delete-item' item.id %}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
-                {% if not item.is_checked_out %}
-                <a href="{% url 'checkout_item' item.id %}" class="btn btn-info btn-sm">Check Out</a>
+                {% if item.notes %}
+                    {{ item.notes }}
                 {% else %}
-                <a href="{% url 'return_item' item.id %}" class="btn btn-success btn-sm">Return</a>
+                    N/A
                 {% endif %}
-              </td>
+            </td>
+            <td>
+              {% if item.is_checked_out %}
+                  Checked out to {{ item.checkouts.last.checked_out_to.first_name }} {{ item.checkouts.last.checked_out_to.last_name }}
+              {% else %}
+                  Available
+              {% endif %}
+          </td>
+          <td>
+              <a href="{% url 'edit-item' item.id %}" class="btn btn-outline-secondary btn-sm">Edit</a>
+              <a href="{% url 'delete-item' item.id %}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
+              {% if item.is_checked_out %}
+                  <a href="{% url 'return_item' item.id %}" class="btn btn-success btn-sm">Return</a>
+              {% else %}
+                  <a href="{% url 'checkout_item' item.id %}" class="btn btn-info btn-sm">Check Out</a>
+              {% endif %}
+          </td>
             </tr>
           {% endfor %}
         </tbody>

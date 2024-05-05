@@ -15,12 +15,17 @@ class InventoryItemForm(forms.ModelForm):
     department = forms.ModelChoiceField(queryset=Department.objects.all(), required=False)
     supplier = forms.ModelChoiceField(queryset=Supplier.objects.all(), required=False)
     pc_name = forms.CharField(label='PC Name') 
+    serial_number = forms.CharField(required=False, label='Serial Number') 
+    model_number = forms.CharField(required=False, label='Model Number')  
+    device_type = forms.CharField(required=False, label='Device Type')  
+    Category = forms.CharField(required=False, label='Category')  
+
 
     class Meta:
         model = InventoryItem
         fields = [
-            'pc_name', #'domain_user'
-            'notes', 'department', 'device_type',
+            'pc_name', #'domain_user', 'department',
+            'notes',  'device_type',
             'costs', 'date_delivered', 'serial_number', 'model_number', 'supplier', 
             'category', 'is_computer', 'new_computer', 'has_dock', 'has_lcd', 'has_lcd2', 
             'has_stand', 'has_keyboard', 'has_cd', 'last_checked_out_at'

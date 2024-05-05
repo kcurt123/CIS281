@@ -7,7 +7,8 @@ from django.contrib.auth.decorators import login_required, permission_required
 from .forms import UserRegisterForm, InventoryItemForm, CheckoutForm, PersonForm
 from .models import InventoryItem, Category, Checkout, Person
 from inventory_management.settings import LOW_QUANTITY
-from django.db.models import Q, Prefetch
+from django.db.models import Q, Prefetch, OuterRef, Subquery, F, Value
+from django.db.models.functions import Concat
 from django.contrib import messages
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -22,7 +23,7 @@ class Index(TemplateView):
 class Dashboard(LoginRequiredMixin, View):
     def get(self, request):
         sort_order = request.GET.get('order', 'asc')
-        sort_by = request.GET.get('sort', 'pc_name') 
+        sort_by = request.GET.get('sort', 'pc_name')
         search_query = request.GET.get('search', '')
         print_mode = 'print' in request.GET
 
@@ -30,26 +31,47 @@ class Dashboard(LoginRequiredMixin, View):
 
         if search_query and not print_mode:
             query = (
-                Q(pc_name__icontains=search_query) | \
-                Q(barcode__icontains=search_query) | \
-                Q(category__name__icontains=search_query) | \
-                Q(supplier__name__icontains=search_query) | \
-                Q(location_name__icontains=search_query) | \
-                Q(department__location__icontains=search_query) | \
+                Q(pc_name__icontains=search_query) | 
+                Q(category__name__icontains=search_query) | 
+                Q(supplier__name__icontains=search_query) | 
+                Q(location_name__icontains=search_query) | 
+                Q(department__location__icontains=search_query) | 
                 Q(notes__icontains=search_query)
             )
             items = items.filter(query)
 
-        if sort_order == 'desc':
-            sort_by = f'-{sort_by}'
+        if sort_by in ['domain_user', 'department', 'person_name']:  # Use 'person_name' instead of 'person'
+            if sort_by == 'domain_user':
+                last_checkout_user = Checkout.objects.filter(
+                    item_id=OuterRef('pk')
+                ).order_by('-checked_out_at').values('checked_out_to__domain_user')[:1]
+                items = items.annotate(domain_user=Subquery(last_checkout_user))
 
-        items = items.order_by(sort_by)
+            elif sort_by == 'department':
+                last_checkout_department = Checkout.objects.filter(
+                    item_id=OuterRef('pk')
+                ).order_by('-checked_out_at').values('checked_out_to__department')[:1]
+                items = items.annotate(department=Subquery(last_checkout_department))
+
+            elif sort_by == 'person_name':
+                last_checkout_person = Checkout.objects.filter(
+                    item_id=OuterRef('pk')
+                ).order_by('-checked_out_at').annotate(
+                    full_name=Concat('checked_out_to__first_name', Value(' '), 'checked_out_to__last_name')
+                ).values('full_name')[:1]
+                items = items.annotate(person_name=Subquery(last_checkout_person))
+
+            sort_prefix = '' if sort_order == 'asc' else '-'
+            items = items.order_by(f"{sort_prefix}{sort_by}")
+        else:
+            sort_prefix = '' if sort_order == 'asc' else '-'
+            items = items.order_by(f"{sort_prefix}{sort_by}")
 
         if print_mode:
-            # Optionally use a different template that's optimized for printing
             return render(request, 'inventory/dashboard_print.html', {
                 'items': items,
-                'print_mode': True  # This could be used to adjust the template logic
+                'print_mode': True,
+                'show_print_button': True
             })
 
         return render(request, 'inventory/dashboard.html', {
@@ -238,3 +260,15 @@ def get_dashboard(request):
         Prefetch('checkouts', queryset=Checkout.objects.select_related('checked_out_to'))
     )
     return render(request, 'dashboard.html', {'items': items})
+
+def dashboard_print(request):
+    # Default columns to show if none are selected
+    default_columns = ['pc_name', 'domain_user', 'person', 'department', 'device_type', 'cost', 'new_computer', 'date_delivered', 'computer_laptop', 'dock', 'lcd', 'lcd2', 'stand', 'keyboard', 'cd', 'supplier', 'notes', 'status']
+    selected_columns = request.GET.getlist('cols') or default_columns
+    items = InventoryItem.objects.all()
+    return render(request, 'dashboard-print.html', {
+        'items': items,
+        'selected_columns': selected_columns
+    })
+
+

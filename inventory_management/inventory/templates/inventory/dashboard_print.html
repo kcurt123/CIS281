@@ -2,35 +2,62 @@
 {% load static %}
 
 {% block content %}
-<div class="container">
+
     <h2>Inventory Dashboard - Print View</h2>
+    <button id="toggleNotes" class="btn btn-info">Toggle Notes</button>
+
     <table class="table table-hover table-striped">
         <thead>
             <tr>
-                <th>ID</th>
                 <th>PC Name</th>
+                <th>Domain User</th>
+                <th>Person</th>
                 <th>Department</th>
-                <th>Model Number</th>
-                <th>Serial Number</th>
-                <th>Notes</th>
+                <th>Device Type</th>
+                <th>Cost</th>
+                <th>New Computer</th>
+                <th>Date Delivered</th>
+                <th>Computer/Laptop</th>
+                <th>Dock</th>
+                <th>LCD</th>
+                <th>LCD2</th>
+                <th>Stand</th>
+                <th>Keyboard</th>
+                <th>CD</th>
                 <th>Supplier</th>
+                <th class="notes-column">Notes</th>
                 <th>Status</th>
             </tr>
         </thead>
         <tbody>
             {% for item in items %}
             <tr>
-                <td>{{ item.id }}</td>
                 <td>{{ item.pc_name }}</td>
-                <td>{{ item.department }}</td>
-                <td>{{ item.model_number }}</td>
-                <td>{{ item.serial_number }}</td>
-                <td>{{ item.notes }}</td>
-                <td>{{ item.supplier.name }}</td>
-                <td>{{ item.is_checked_out|yesno:"Checked Out,Available" }}</td>
+                <td>{% with item.checkouts.last as last_checkout %}{% if last_checkout and last_checkout.checked_out_to and not last_checkout.returned %}{{ last_checkout.checked_out_to.domain_user }}{% else %}N/A{% endif %}{% endwith %}</td>
+                <td>{% if item.is_checked_out %}{% with item.checkouts.last as checkout %}{% if checkout and not checkout.returned %}{{ checkout.checked_out_to.first_name }} {{ checkout.checked_out_to.last_name }}{% else %}Checked Out (Person Unknown){% endif %}{% endwith %}{% else %}N/A{% endif %}</td>
+                <td>{% with item.checkouts.last as last_checkout %}{% if last_checkout and last_checkout.checked_out_to and not last_checkout.returned %}{{ last_checkout.checked_out_to.department }}{% else %}N/A{% endif %}{% endwith %}</td>
+                <td>{{ item.device_type }}</td>
+                <td>${{ item.costs }}</td>
+                <td>{{ item.new_computer|yesno:"Yes,No" }}</td>
+                <td>{{ item.date_delivered }}</td>
+                <td>{{ item.is_computer|yesno:"Yes,No" }}</td>
+                <td>{{ item.has_dock|yesno:"Yes,No" }}</td>
+                <td>{{ item.has_lcd|yesno:"Yes,No" }}</td>
+                <td>{{ item.has_lcd2|yesno:"Yes,No" }}</td>
+                <td>{{ item.has_stand|yesno:"Yes,No" }}</td>
+                <td>{{ item.has_keyboard|yesno:"Yes,No" }}</td>
+                <td>{{ item.has_cd|yesno:"Yes,No" }}</td>
+                <td>{{ item.supplier.name|default:"N/A" }}</td>
+                <td class="notes-column">{{ item.notes|default:"None" }}</td>
+                <td>
+                    {% if item.is_checked_out and item.checkouts.last and not item.checkouts.last.returned %}
+                        Checked out to {{ item.checkouts.last.checked_out_to.first_name }} {{ item.checkouts.last.checked_out_to.last_name }}
+                    {% else %}
+                        Available
+                    {% endif %}
+                </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-</div>
 {% endblock %}

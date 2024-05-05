@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path
-from .views import Index, SignUpView, Dashboard, AddItem, EditItem, DeleteItem, check_item_by_barcode, checkout_item, checked_out_items, return_item
+from .views import Index, SignUpView, Dashboard, AddItem, EditItem, DeleteItem, check_item_by_barcode, checkout_item, checked_out_items, return_item, dashboard_print
 from django.contrib.auth import views as auth_views
 from . import views
 
@@ -19,4 +19,5 @@ urlpatterns = [
     path('api/inventory/', views.update_inventory, name='update_inventory'),  
     path('check-item-by-barcode/', check_item_by_barcode, name='check_item_by_barcode'), 
     path('return-item/<int:item_id>/', return_item, name='return_item'),
+    path('dashboard-print/', dashboard_print, name='dashboard_print'),
 ]

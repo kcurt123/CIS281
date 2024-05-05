@@ -11,31 +11,21 @@
 {% block content %}
 <div class="container mt-3">
     <div class="text-center mb-4">
-        <h1>Add Inventory Item</h1>
+        <h1>{% if form.instance.pk %}Edit Inventory Item{% else %}Add Inventory Item{% endif %}</h1>
     </div>
 
-    <!--<div class="row justify-content-center">
-        <div class="col-12 text-center">
-            <h2>Scan Barcode *****Broken for now******</h2>
-            <button id="startScan" class="btn btn-info">Start Scanning</button>
-            <button id="stopScan" class="btn btn-danger" style="display: none;">Stop Scanning</button>
-            
-            <div id="scanner-container" style="width: 100%; width: 640; height: 280px;"></div>
-        </div>
-    </div>-->
-
-    <!-- Fillable Form Section Below -->
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div id="input-box-section">
-                <!-- Display Barcode Result Here -->
-                <!--<div id="barcodeResult" class="mt-2">Barcode results</div>-->
                 <form method="POST" id="itemForm">
                     {% csrf_token %}
                     {{ form|crispy }}
                     <div class="mt-3 text-center">
-                        <button type="submit" name="action" value="add" class="btn btn-primary">Add Item</button>
-                        <button type="submit" name="action" value="save" class="btn btn-success">Save</button>
+                        {% if form.instance.pk %}
+                            <button type="submit" name="action" value="save" class="btn btn-success">Save</button>
+                        {% else %}
+                            <button type="submit" name="action" value="add" class="btn btn-primary">Add Item</button>
+                        {% endif %}
                     </div>
                 </form>
             </div>
