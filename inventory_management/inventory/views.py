@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from .forms import UserRegisterForm, InventoryItemForm, CheckoutForm, PersonForm
 from .models import InventoryItem, Category, Checkout, Person
 from inventory_management.settings import LOW_QUANTITY
-from django.db.models import Q
+from django.db.models import Q, Prefetch
 from django.contrib import messages
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -232,3 +232,9 @@ def return_item(request, item_id):
         return redirect(referer)
     else:
         return redirect('dashboard')
+
+def get_dashboard(request):
+    items = InventoryItem.objects.all().prefetch_related(
+        Prefetch('checkouts', queryset=Checkout.objects.select_related('checked_out_to'))
+    )
+    return render(request, 'dashboard.html', {'items': items})

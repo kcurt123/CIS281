@@ -19,7 +19,8 @@ class InventoryItemForm(forms.ModelForm):
     class Meta:
         model = InventoryItem
         fields = [
-            'pc_name', 'domain_user', 'notes', 'department', 'device_type',
+            'pc_name', #'domain_user'
+            'notes', 'department', 'device_type',
             'costs', 'date_delivered', 'serial_number', 'model_number', 'supplier', 
             'category', 'is_computer', 'new_computer', 'has_dock', 'has_lcd', 'has_lcd2', 
             'has_stand', 'has_keyboard', 'has_cd', 'last_checked_out_at'

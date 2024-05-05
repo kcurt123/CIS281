@@ -26,7 +26,16 @@ class Department(models.Model):
 class Person(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
-    other_identifier = models.CharField(max_length=100, blank=True, null=True)  
+    other_identifier = models.CharField(max_length=100, blank=True, null=True)
+    domain_user = models.CharField(max_length=101, blank=True)  # Adjust the length as needed
+
+    def save(self, *args, **kwargs):
+        # Automatically generate domain_user if it is not already set
+        if not self.domain_user:
+            initial = self.first_name[0].upper() if self.first_name else ''
+            last_name_capitalized = self.last_name.capitalize() if self.last_name else ''
+            self.domain_user = f"{initial}{last_name_capitalized}"
+        super().save(*args, **kwargs)  # Call the real save method
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
@@ -41,7 +50,7 @@ class Supplier(models.Model):
 
 class InventoryItem(models.Model):
     pc_name = models.CharField(max_length=255)
-    domain_user = models.CharField(max_length=200, blank=True, null=True)
+    #domain_user = models.CharField(max_length=200, blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     notes = models.TextField(blank=True, default='')
     barcode = models.CharField(max_length=100, null=True, blank=True)
@@ -83,6 +92,7 @@ class Checkout(models.Model):
 
     def __str__(self):
         person_name = self.checked_out_to if self.checked_out_to else "Unknown"
+        person_domain_user = self.checked_out_to.domain_user if self.checked_out_to else "None"
         item_name = self.item.pc_name if self.item else "No Item"
         return f"{item_name} checked out to {person_name}"
 

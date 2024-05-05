@@ -43,6 +43,7 @@
           <tr>
             <!--<th scope="col"><a href="?sort=id&order={{ next_sort_order }}">ID</a></th> -->
             <th scope="col"><a href="?sort=pc_name&order={{ next_sort_order }}">PC Name</a></th>
+            <th scope="col"><a href="?sort=domain_user&order={{ next_sort_order }}">Domain User</a></th>
             <th scope="col"><a href="?sort=department&order={{ next_sort_order }}">Department</a></th>
             <th scope="col"><a href="?sort=model_number&order={{ next_sort_order }}">Model Number</a></th>
             <th scope="col"><a href="?sort=serial_number&order={{ next_sort_order }}">Serial Number</a></th>
@@ -68,44 +69,55 @@
               data-has_keyboard="{{ item.has_keyboard }}"
               data-has_cd="{{ item.has_cd }}"
               data-last_checked_out_at="{{ item.last_checked_out_at|date:'Y-m-d g:i A' }}"
+              
               {% if item.is_checked_out %} table-light {% endif %}>
+              
               <!--<th scope="row">{{ item.id }}</th>-->
               <td>{{ item.pc_name }}</td>
               <td>
-                {% if item.department %}
-                  {{ item.department.department }}
-                {% else %}
-                  None
-                {% endif %}
+                {% with item.checkouts.last as last_checkout %}
+                  {% if last_checkout and last_checkout.checked_out_to %}
+                      {{ last_checkout.checked_out_to.domain_user }}
+                  {% else %}
+                      N/A
+                  {% endif %}
+                {% endwith %}
+              </td> 
+              <td>
+                  {% if item.department %}
+                      {{ item.department.department }}
+                  {% else %}
+                      None
+                  {% endif %}
               </td>
               <td>{{ item.model_number }}</td>
               <td>{{ item.serial_number }}</td>
               <td>
-                {% if item.notes %}
-                  {{ item.notes }}
-                {% else %}
-                  None
-                {% endif %}
+                  {% if item.notes %}
+                      {{ item.notes }}
+                  {% else %}
+                      None
+                  {% endif %}
               </td>
               <td>
-                {% if item.supplier %}
-                  {{ item.supplier.name }}
-                {% else %}
-                  No Supplier
-                {% endif %}
+                  {% if item.supplier %}
+                      {{ item.supplier.name }}
+                  {% else %}
+                      No Supplier
+                  {% endif %}
               </td>
               <td>
-                {% if item.is_checked_out %}
-                  {% with item.checkouts.last as checkout %}
-                    {% if checkout and checkout.checked_out_to %}
-                      Checked out to {{ checkout.checked_out_to.first_name }} {{ checkout.checked_out_to.last_name }}
-                    {% else %}
-                      Checked Out (Person Unknown)
-                    {% endif %}
-                  {% endwith %}
-                {% else %}
-                  Available
-                {% endif %}
+                  {% if item.is_checked_out %}
+                      {% with item.checkouts.last as checkout %}
+                          {% if checkout and checkout.checked_out_to %}
+                              Checked out to {{ checkout.checked_out_to.first_name }} {{ checkout.checked_out_to.last_name }}
+                          {% else %}
+                              Checked Out (Person Unknown)
+                          {% endif %}
+                      {% endwith %}
+                  {% else %}
+                      Available
+                  {% endif %}
               </td>
               <td>
                 <a href="{% url 'edit-item' item.id %}" class="btn btn-outline-secondary btn-sm">Edit</a>
