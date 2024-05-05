@@ -1,0 +1,119 @@
+[
+    {
+      "model": "inventory.department",
+      "pk": 1,
+      "fields": {
+        "department": "Engineering"
+      }
+    },
+    {
+      "model": "inventory.person",
+      "pk": 1,
+      "fields": {
+        "first_name": "Frances",
+        "last_name": "Gullefant",
+        "other_identifier": null,
+        "domain_user": "FGullefant",
+        "department": 1
+      }
+    },
+    {
+      "model": "inventory.person",
+      "pk": 2,
+      "fields": {
+        "first_name": "Harcourt",
+        "last_name": "Zoanetti",
+        "other_identifier": null,
+        "domain_user": "HZoanetti",
+        "department": 1
+      }
+    },
+    {
+      "model": "inventory.person",
+      "pk": 3,
+      "fields": {
+        "first_name": "Washington",
+        "last_name": "Oxteby",
+        "other_identifier": null,
+        "domain_user": "WOxteby",
+        "department": 1
+      }
+    },
+    {
+      "model": "inventory.person",
+      "pk": 4,
+      "fields": {
+        "first_name": "Rafe",
+        "last_name": "Duffitt",
+        "other_identifier": null,
+        "domain_user": "RDuffitt",
+        "department": 1
+      }
+    },
+    {
+      "model": "inventory.person",
+      "pk": 5,
+      "fields": {
+        "first_name": "Tris",
+        "last_name": "Bent",
+        "other_identifier": null,
+        "domain_user": "TBent",
+        "department": 1
+      }
+    },
+    {
+      "model": "inventory.person",
+      "pk": 6,
+      "fields": {
+        "first_name": "Kassie",
+        "last_name": "Elman",
+        "other_identifier": null,
+        "domain_user": "KElman",
+        "department": 1
+      }
+    },
+    {
+      "model": "inventory.person",
+      "pk": 7,
+      "fields": {
+        "first_name": "Elbertina",
+        "last_name": "Hewins",
+        "other_identifier": null,
+        "domain_user": "EHewins",
+        "department": 1
+      }
+    },
+    {
+      "model": "inventory.person",
+      "pk": 8,
+      "fields": {
+        "first_name": "Garland",
+        "last_name": "Chuney",
+        "other_identifier": null,
+        "domain_user": "GChuney",
+        "department": 1
+      }
+    },
+    {
+      "model": "inventory.person",
+      "pk": 9,
+      "fields": {
+        "first_name": "Caroljean",
+        "last_name": "Bischop",
+        "other_identifier": null,
+        "domain_user": "CBischop",
+        "department": 1
+      }
+    },
+    {
+      "model": "inventory.person",
+      "pk": 10,
+      "fields": {
+        "first_name": "Delmor",
+        "last_name": "McKleod",
+        "other_identifier": null,
+        "domain_user": "DMcKleod",
+        "department": 1
+      }
+    }
+  ]

@@ -18,7 +18,6 @@ class InventoryItemForm(forms.ModelForm):
     serial_number = forms.CharField(required=False, label='Serial Number') 
     model_number = forms.CharField(required=False, label='Model Number')  
     device_type = forms.CharField(required=False, label='Device Type')  
-    Category = forms.CharField(required=False, label='Category')  
 
 
     class Meta:

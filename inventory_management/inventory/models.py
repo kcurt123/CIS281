@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+
 class Category(models.Model):
     name = models.CharField(max_length=200)
 
@@ -54,7 +55,7 @@ class Supplier(models.Model):
 
 class InventoryItem(models.Model):
     pc_name = models.CharField(max_length=255)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     notes = models.TextField(blank=True, default='')
     device_type = models.CharField(max_length=50, default='Laptop')
     category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True)
@@ -112,3 +113,4 @@ def update_last_checked_out_details(sender, instance, created, **kwargs):
         item.last_checked_out_at = instance.checked_out_at
         item.last_checked_out_by = instance.checked_out_by
         item.save()
+
